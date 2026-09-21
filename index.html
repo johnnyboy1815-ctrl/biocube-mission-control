@@ -1,100 +1,69 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#061722">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>BioCube Mission Control</title>
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>BioCube Mission Control</title><link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#061722;--card:#0c2635;--card2:#102f40;--line:#1b4559;--text:#effbff;--muted:#91b7c8;--aqua:#55d6ff;--good:#5ce397;--warn:#ffd166;--bad:#ff7070}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#0c3447 0,#061722 43%);color:var(--text);min-height:100vh}
-.app{max-width:960px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 15px calc(90px + env(safe-area-inset-bottom))}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}h1{font-size:27px;margin:0}.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--aqua);font-weight:800}.muted{color:var(--muted)}
-.pill{border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-size:11px;color:var(--aqua)}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.card{background:linear-gradient(145deg,rgba(15,45,61,.97),rgba(8,32,45,.97));border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:0 12px 28px #0003}.full{grid-column:1/-1}
-.label{font-size:12px;color:var(--muted)}.value{font-size:25px;font-weight:800;margin:5px 0}.unit{font-size:12px;color:var(--muted);font-weight:600}.status{font-size:11px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
-h2{font-size:18px;margin:0 0 10px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.btn{appearance:none;border:0;border-radius:13px;padding:11px 8px;background:#123b4e;color:var(--text);font-weight:750;font-size:12px}.btn.primary{background:var(--aqua);color:#03212e}.btn.danger{background:#4b2830}
-table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted)}.scroll{overflow:auto}
-dialog{border:1px solid var(--line);border-radius:22px;background:#092433;color:var(--text);width:min(92vw,540px);padding:18px}dialog::backdrop{background:#000a}
-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;color:var(--muted);font-size:11px;margin:0 0 4px}.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:11px;background:#061b27;color:var(--text);padding:11px;font-size:16px}.span2{grid-column:1/-1}
-footer{position:fixed;left:0;right:0;bottom:0;background:#061722e8;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px max(12px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px}
-footer button{max-width:220px;flex:1}
+:root{--bg:#061722;--card:#0c2635;--line:#1b4559;--txt:#effbff;--muted:#91b7c8;--aqua:#55d6ff;--good:#5ce397;--warn:#ffd166;--bad:#ff7070}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#0d384b,#061722 45%);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:960px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 15px 100px}header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+h1{margin:0;font-size:27px}.eyebrow{color:var(--aqua);font-size:11px;font-weight:800;letter-spacing:.13em}.muted{color:var(--muted)}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 9px;font-size:11px;color:var(--aqua)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.card{background:linear-gradient(145deg,#0f2e3e,#08202d);border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:0 12px 28px #0003}.full{grid-column:1/-1}
+.label{font-size:12px;color:var(--muted)}.value{font-size:25px;font-weight:800;margin:5px 0}.unit{font-size:12px;color:var(--muted)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.status{font-size:11px}
+button{border:0;border-radius:13px;padding:11px;background:#123b4e;color:var(--txt);font-weight:750}.primary{background:var(--aqua);color:#03212e}.danger{background:#4b2830}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted)}.scroll{overflow:auto}
+dialog{border:1px solid var(--line);border-radius:20px;background:#092433;color:var(--txt);width:min(92vw,540px);padding:18px}dialog::backdrop{background:#000b}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.field input,.field textarea{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#061b27;color:var(--txt);font-size:16px}.span2{grid-column:1/-1}
+#login{max-width:440px;margin:15vh auto}.hidden{display:none!important}.msg{font-size:12px;margin-top:9px}.small{font-size:11px;line-height:1.45;color:var(--muted)}
 canvas{width:100%;height:130px;background:#071e2a;border-radius:12px}
-.small{font-size:11px;line-height:1.4;color:var(--muted)}
+footer{position:fixed;bottom:0;left:0;right:0;background:#061722e8;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:center}footer button{max-width:220px;flex:1}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
-</style>
-</head>
-<body><main class="app">
-<header><div><div class="eyebrow">REEF SYSTEM</div><h1>BioCube 32 🪸</h1><div class="muted" style="font-size:12px">Mission Control</div></div><div class="pill" id="updated">LOCAL MODE</div></header>
+</style></head><body>
+<div class="wrap">
+<section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control.</p>
+<div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br>
+<div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br>
+<button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="msg"></div></section>
 
-<section class="grid" id="cards"></section>
+<section id="app" class="hidden">
+<header><div><div class="eyebrow">REEF SYSTEM • CLOUD</div><h1>BioCube 32 🪸</h1><div class="muted" style="font-size:12px">Mission Control</div></div><div class="pill" id="updated">SYNCING…</div></header>
+<div class="grid" id="cards"></div>
+<div class="grid" style="margin-top:11px">
+<div class="card full"><div class="label">Tank status</div><h2 id="assessment">Loading…</h2><div class="small">Stability and trends matter more than chasing one isolated number.</div></div>
+<div class="card full"><div class="label">Nitrate trend</div><canvas id="chart" width="800" height="220"></canvas></div>
+<div class="card full"><div class="label">Cloud test history</div><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div>
+<div class="card full"><div class="actions"><button class="primary" onclick="openTest()">＋ Add Test</button><button onclick="loadTests()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div><div id="syncMsg" class="msg muted"></div></div>
+</div></section></div>
 
-<section class="grid" style="margin-top:11px">
-<div class="card full"><h2>Tank status</h2><div id="assessment"></div><div class="small" style="margin-top:8px">Status guidance is informational. Stability and trends matter more than chasing a single number.</div></div>
-<div class="card full"><h2>Nitrate trend</h2><canvas id="chart" width="800" height="220"></canvas></div>
-<div class="card full"><h2>Test history</h2><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div>
-<div class="card full"><h2>Quick tools</h2><div class="actions"><button class="btn primary" onclick="openTest()">＋ Add Test</button><button class="btn" onclick="exportData()">Export Data</button><button class="btn danger" onclick="resetData()">Reset Local</button></div><div class="small" style="margin-top:10px">This package works immediately using on-device storage. The next setup step connects Supabase so your readings become cloud-backed and the iPhone widget can read the same live data.</div></div>
-</section>
-</main>
+<footer id="footer" class="hidden"><button class="primary" onclick="openTest()">＋ Add Water Test</button><button onclick="loadTests()">↻ Sync</button></footer>
 
-<footer><button class="btn primary" onclick="openTest()">＋ Add Water Test</button><button class="btn" onclick="location.reload()">↻ Refresh</button></footer>
-
-<dialog id="testDialog"><h2>Add Water Test</h2>
-<form id="testForm">
-<div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div>
-<div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div>
-<div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div>
-<div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div>
-<div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div>
-<div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div>
-<div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div>
-<div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div>
-<div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div>
-<div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div>
-<div class="field span2"><label>Notes</label><textarea name="notes" rows="2" placeholder="Water change, feeding, livestock notes…"></textarea></div>
-<div class="span2 actions"><button type="button" class="btn" onclick="testDialog.close()">Cancel</button><button class="btn primary" type="submit">Save Test</button></div>
+<dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm">
+<div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div>
+<div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div>
+<div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div>
+<div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div>
+<div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div>
+<div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
+<div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div>
 </form></dialog>
-
-<script src="config.js"></script>
-<script>
-const seed=[
-{date:"2026-09-19T12:00:00",ammonia:.1,nitrite:.25,nitrate:2.5,ph:7.8,kh:null,calcium:420,salinity:1.026,copper:0},
-{date:"2026-09-20T12:00:00",ammonia:0,nitrite:.15,nitrate:15,ph:null,kh:null,calcium:null,salinity:1.026,copper:null},
-{date:"2026-09-21T12:00:00",ammonia:.05,nitrite:.25,nitrate:20,ph:8.2,kh:11.5,calcium:435,salinity:1.026,copper:0}
-];
-let tests=JSON.parse(localStorage.getItem("biocubeTests")||"null")||seed;
-const defs=[
-["ammonia","Ammonia","ppm"],["nitrite","Nitrite","ppm"],["nitrate","Nitrate","ppm"],["ph","pH",""],
-["kh","Alkalinity","dKH"],["calcium","Calcium","ppm"],["salinity","Salinity","SG"],["temperature","Temperature","°F"],
-["phosphate","Phosphate","ppm"],["copper","Copper","ppm"]];
-function fmt(v){return v===null||v===undefined||v===""?"—":Number(v).toLocaleString(undefined,{maximumFractionDigits:3})}
-function stat(k,v){if(v==null)return["muted","Not tested"];
-if(k==="ammonia")return v<=.05?["good","Excellent"]:v<=.25?["warn","Watch"]:["bad","High"];
-if(k==="nitrite")return v===0?["good","Zero"]:["warn","Detectable"];
-if(k==="nitrate")return v<=20?["good","Good"]:v<=40?["warn","Elevated"]:["bad","High"];
-if(k==="ph")return v>=7.8&&v<=8.4?["good","Reef range"]:["warn","Check trend"];
-if(k==="kh")return v>=8&&v<=12?["good","Good"]:["warn","Check trend"];
-if(k==="calcium")return v>=400&&v<=460?["good","Excellent"]:["warn","Check trend"];
-if(k==="salinity")return v>=1.024&&v<=1.0265?["good","Reef range"]:["warn","Check"];
-if(k==="temperature")return v>=76&&v<=80?["good","Good"]:["warn","Check"];
-if(k==="phosphate")return v>=.02&&v<=.1?["good","Useful reef range"]:v===0?["warn","Very low"]:["warn","Check trend"];
-if(k==="copper")return v===0?["good","Reef safe reading"]:["bad","Detected"];return["muted",""];}
-function latestValue(k){for(let i=tests.length-1;i>=0;i--)if(tests[i][k]!=null&&tests[i][k]!=="")return tests[i][k];return null}
-function render(){
-let latest=tests[tests.length-1]; document.getElementById("updated").textContent="Updated "+new Date(latest.date).toLocaleDateString();
-cards.innerHTML=defs.map(([k,n,u])=>{let v=latestValue(k),s=stat(k,Number(v));return `<div class="card"><div class="label">${n}</div><div class="value">${fmt(v)} <span class="unit">${u}</span></div><div class="status ${s[0]}">● ${s[1]}</div></div>`}).join("");
-let a=Number(latestValue("ammonia")),ni=Number(latestValue("nitrite"));
-assessment.innerHTML=(a<=.05&&ni===0)?`<b class="good">Core nitrogen readings look settled.</b>`:`<b class="warn">Cycle / biofilter still deserves monitoring.</b> Latest ammonia is ${fmt(latestValue("ammonia"))} ppm and nitrite is ${fmt(latestValue("nitrite"))} ppm.`;
-history.innerHTML=[...tests].reverse().map(t=>`<tr><td>${new Date(t.date).toLocaleDateString()}</td><td>${fmt(t.ammonia)}</td><td>${fmt(t.nitrite)}</td><td>${fmt(t.nitrate)}</td><td>${fmt(t.ph)}</td><td>${fmt(t.kh)}</td><td>${fmt(t.calcium)}</td><td>${fmt(t.salinity)}</td></tr>`).join("");
-drawChart();
-}
-function drawChart(){let c=chart,x=c.getContext("2d"),d=tests.filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle="#91b7c8";x.font="28px sans-serif";x.fillText("Add more tests to build the trend.",25,110);return}let max=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle="#55d6ff";x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/max)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();}
-function openTest(){testForm.reset();testDialog.showModal()}
-testForm.addEventListener("submit",e=>{e.preventDefault();let f=new FormData(e.target),o={date:new Date().toISOString()};for(let [k,v] of f.entries())o[k]=k==="notes"?v:(v.trim()===""?null:Number(v));tests.push(o);localStorage.setItem("biocubeTests",JSON.stringify(tests));testDialog.close();render()});
-function exportData(){let b=new Blob([JSON.stringify(tests,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="biocube-tests.json";a.click()}
-function resetData(){if(confirm("Reset local test history to the starter data?")){tests=[...seed];localStorage.setItem("biocubeTests",JSON.stringify(tests));render()}}
-render();
+<script src="config.js"></script><script>
+const cfg=window.BIOCUBE_CONFIG||{}, configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes("YOUR_");
+let sb=null, tests=[];
+if(configured) sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
+const defs=[["ammonia","Ammonia","ppm"],["nitrite","Nitrite","ppm"],["nitrate","Nitrate","ppm"],["ph","pH",""],["kh","Alkalinity","dKH"],["calcium","Calcium","ppm"],["salinity","Salinity","SG"],["temperature","Temperature","°F"],["phosphate","Phosphate","ppm"],["copper","Copper","ppm"]];
+const $=id=>document.getElementById(id), fmt=v=>v==null||v===""?"—":Number(v).toLocaleString(undefined,{maximumFractionDigits:3});
+function stat(k,v){if(v==null)return["muted","Not tested"];if(k==="ammonia")return v<=.05?["good","Excellent"]:v<=.25?["warn","Watch"]:["bad","High"];if(k==="nitrite")return v===0?["good","Zero"]:["warn","Detectable"];if(k==="nitrate")return v<=20?["good","Good"]:v<=40?["warn","Elevated"]:["bad","High"];if(k==="ph")return v>=7.8&&v<=8.4?["good","Reef range"]:["warn","Check trend"];if(k==="kh")return v>=8&&v<=12?["good","Good"]:["warn","Check trend"];if(k==="calcium")return v>=400&&v<=460?["good","Excellent"]:["warn","Check trend"];if(k==="salinity")return v>=1.024&&v<=1.0265?["good","Reef range"]:["warn","Check"];if(k==="temperature")return v>=76&&v<=80?["good","Good"]:["warn","Check"];if(k==="phosphate")return v>=.02&&v<=.1?["good","Useful reef range"]:["warn","Check"];if(k==="copper")return v===0?["good","Zero"]:["bad","Detected"];return["muted",""];}
+function latest(k){for(let i=0;i<tests.length;i++)if(tests[i][k]!=null)return tests[i][k];return null}
+async function boot(){if(!configured){$("login").classList.remove("hidden");$("loginMsg").innerHTML='<span class="bad">config.js still needs your Supabase Project URL and Publishable key.</span>';return}let {data:{session}}=await sb.auth.getSession();showSession(session);sb.auth.onAuthStateChange((_e,s)=>showSession(s))}
+function showSession(s){$("login").classList.toggle("hidden",!!s);$("app").classList.toggle("hidden",!s);$("footer").classList.toggle("hidden",!s);if(s)loadTests()}
+async function signIn(){ $("loginMsg").textContent="Signing in…";let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("loginMsg").innerHTML=error?`<span class="bad">${error.message}</span>`:"";}
+async function signOut(){await sb.auth.signOut()}
+async function loadTests(){ $("syncMsg").textContent="Syncing…";let {data,error}=await sb.from("water_tests").select("*").order("tested_at",{ascending:false});if(error){$("syncMsg").innerHTML=`<span class="bad">${error.message}</span>`;return}tests=data||[];$("syncMsg").textContent="Cloud sync complete.";render()}
+function render(){let d=tests[0];$("updated").textContent=d?"Updated "+new Date(d.tested_at).toLocaleString():"NO TESTS YET";$("cards").innerHTML=defs.map(([k,n,u])=>{let v=latest(k),s=stat(k,v==null?null:Number(v));return `<div class="card"><div class="label">${n}</div><div class="value">${fmt(v)} <span class="unit">${u}</span></div><div class="status ${s[0]}">● ${s[1]}</div></div>`}).join("");let a=Number(latest("ammonia")),ni=Number(latest("nitrite"));$("assessment").innerHTML=!tests.length?"Add your first cloud test.":(a<=.05&&ni===0?'<span class="good">Core nitrogen readings look settled.</span>':`<span class="warn">Biofilter still deserves monitoring.</span>`);$("history").innerHTML=tests.map(t=>`<tr><td>${new Date(t.tested_at).toLocaleDateString()}</td><td>${fmt(t.ammonia)}</td><td>${fmt(t.nitrite)}</td><td>${fmt(t.nitrate)}</td><td>${fmt(t.ph)}</td><td>${fmt(t.kh)}</td><td>${fmt(t.calcium)}</td><td>${fmt(t.salinity)}</td></tr>`).join("");draw()}
+function draw(){let c=$("chart"),x=c.getContext("2d"),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle="#91b7c8";x.font="25px sans-serif";x.fillText("Add more tests to build the trend.",25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle="#55d6ff";x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
+function openTest(){$("testForm").reset();$("testDialog").showModal()}
+$("testForm").addEventListener("submit",async e=>{e.preventDefault();let f=new FormData(e.target),o={};for(let [k,v] of f.entries())o[k]=k==="notes"?v:(v.trim()===""?null:Number(v));let {error}=await sb.from("water_tests").insert(o);if(error){alert(error.message);return}$("testDialog").close();await loadTests()});
+boot();
 </script></body></html>
