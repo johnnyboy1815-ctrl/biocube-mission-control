@@ -1,0 +1,9 @@
+{
+  "name": "BioCube Mission Control",
+  "short_name": "BioCube 32",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#061722",
+  "theme_color": "#061722",
+  "description": "BioCube 32 reef aquarium water chemistry dashboard"
+}
