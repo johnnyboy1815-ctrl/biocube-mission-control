@@ -2,6 +2,6 @@
 // Use ONLY your Project URL and Publishable key here.
 // NEVER place a secret/service_role key in this file.
 window.BIOCUBE_CONFIG = {
-  supabaseUrl: "YOUR_SUPABASE_PROJECT_URL",
+  supabaseUrl: "https://dofdefbwoocyiqmudtrl.supabase.co/rest/v1/",
   supabasePublishableKey: "YOUR_SUPABASE_PUBLISHABLE_KEY"
 };
