@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>BioCube Mission Control v4.5</title><link rel="manifest" href="manifest.json">
+<title>BioCube Mission Control v4.5.1</title><link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
@@ -144,6 +144,16 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
   .homeFishCard[data-fish="glitch"] img{object-position:center 78%}
 }
 
+
+/* V4.5.1 mobile navigation: keep Alex permanently visible */
+@media(max-width:719px){
+  nav{overflow-x:hidden}
+  nav button{min-width:0;flex:1 1 20%}
+  nav button[data-tab="feed"],
+  nav button[data-tab="pods"],
+  nav button[data-tab="maintenance"]{display:none}
+}
+
 </style></head><body><div class="wrap">
 <section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v4.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
 <section id="app" class="hidden"><header><div class="brandMark"><div class="waveLogo">≋</div><div class="brand"><div class="eyebrow">BIOCUBE</div><h1>Mission Control</h1></div></div><div><span id="roleBadge" class="badge hidden">VIEW ONLY</span> <span id="updated" class="pill">SYNCING</span></div></header>
@@ -173,7 +183,7 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 <section id="maintenance" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM CARE</div><h2>Maintenance</h2></div></div><div class="card"><h3>Maintenance module ready for expansion.</h3><p class="muted">Water changes, filter service, ATO, equipment and recurring care will live here.</p></div></section>
 <section id="alex" class="section"><div class="sectionTitle"><div><div class="eyebrow">AI ADVISOR</div><h2>Ask Alex</h2></div></div><div class="card aiCard"><h3>Your tank-aware aquarium advisor.</h3><p class="muted">Alex uses your current Mission Control water history, livestock, goals, feed and pod-culture records as context.</p><div class="askBox"><input id="alexQuestion" maxlength="1500" placeholder="Ask about Glitch, chemistry, pods…"><button id="alexAskBtn" class="primary" onclick="askAlex()">Ask</button></div><div id="alexStatus" class="small" style="margin-top:10px"></div><div id="alexAnswer" style="margin-top:12px;white-space:pre-wrap;line-height:1.55"></div></div></section>
 <div class="actions" style="margin-top:12px"><button onclick="loadAll()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div></section></div>
-<nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Fish</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button><button data-tab="alex">🧠<br>Alex</button></nav>
+<nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Fish</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="alex">🧠<br>Alex</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button></nav>
 <dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm"><div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div><div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div><div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div><div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div><div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div><div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div><div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div></form></dialog>
 <script src="config.js"></script><script>
 const OWNER='1397f638-c599-4709-9892-571fad9c8758',VIEWERS=['05182544-7a84-4551-b82c-0f3ba0a7ead9','0ce96dba-397e-4dc9-a9d0-3623f3fb1ff3'];
