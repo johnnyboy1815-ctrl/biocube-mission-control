@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>BioCube Mission Control v4.4</title><link rel="manifest" href="manifest.json">
+<title>BioCube Mission Control v4.4.2</title><link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
@@ -88,6 +88,62 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
   .homeFishCard img{object-position:center center}
   .homeFishCard[data-fish="glitch"] img{object-position:center 72%}
 }
+
+/* V4.4.2 definitive mobile Meet the Reef fix */
+@media(max-width:849px){
+  .homeFishStrip{
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:100%;
+    gap:10px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-padding:0;
+    padding:2px 0 6px;
+    scrollbar-width:none;
+  }
+  .homeFishStrip::-webkit-scrollbar{display:none}
+  .homeFishCard{
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    height:126px;
+    display:grid;
+    grid-template-columns:minmax(0,44%) minmax(0,56%);
+    overflow:hidden;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    padding:0;
+  }
+  .homeFishCard img{
+    width:100%;
+    height:126px;
+    min-width:0;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+  .homeFishText{
+    min-width:0;
+    overflow:hidden;
+    padding:12px 14px;
+    position:static;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .homeFishText strong,.homeFishText span,.fishGood{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .homeFishText strong{font-size:19px;white-space:nowrap}
+  .homeFishText span{font-size:10px;white-space:normal;line-height:1.3}
+  .fishGood{font-size:10px;white-space:nowrap}
+  .homeFishCard[data-fish="glitch"] img{object-position:center 78%}
+}
+
 </style></head><body><div class="wrap">
 <section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v4.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
 <section id="app" class="hidden"><header><div class="brandMark"><div class="waveLogo">≋</div><div class="brand"><div class="eyebrow">BIOCUBE</div><h1>Mission Control</h1></div></div><div><span id="roleBadge" class="badge hidden">VIEW ONLY</span> <span id="updated" class="pill">SYNCING</span></div></header>
