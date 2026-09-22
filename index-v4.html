@@ -61,6 +61,33 @@ nav{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;overflow-x:au
 nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:block;font-size:20px;line-height:22px;margin-bottom:3px}nav button:after{display:block;font-size:10px}nav button[data-tab="home"]:before{content:"⌂"}nav button[data-tab="home"]:after{content:"Home"}nav button[data-tab="water"]:before{content:"◉"}nav button[data-tab="water"]:after{content:"Water"}nav button[data-tab="livestock"]:before{content:"◁"}nav button[data-tab="livestock"]:after{content:"Fish"}nav button[data-tab="goals"]:before{content:"◎"}nav button[data-tab="goals"]:after{content:"Goals"}nav button[data-tab="feed"]:before{content:"▤"}nav button[data-tab="feed"]:after{content:"Feed"}nav button[data-tab="pods"]:before{content:"◌"}nav button[data-tab="pods"]:after{content:"Pods"}nav button[data-tab="maintenance"]:before{content:"⚙︎"}nav button[data-tab="maintenance"]:after{content:"Care"}nav button[data-tab="alex"]:before{content:"✦"}nav button[data-tab="alex"]:after{content:"Alex"}
 @media(max-width:849px){.wrap{padding-left:12px;padding-right:12px}.brand h1{font-size:22px}.hero{min-height:285px}.commandHero{gap:9px}.homeBlock{margin-top:16px}.latestGrid{gap:7px}.latestPanel button{padding:10px}.homeBottomGrid{gap:9px}.actions{margin-bottom:4px!important}}
 @media(min-width:850px){.heroText h2:after{font-size:15px}.homeFishCard{height:128px}.photoRail img{height:125px}.commandHero{grid-template-columns:2.15fr 1fr}.homeBottomGrid{grid-template-columns:1.55fr 1fr}}
+
+/* V4.4.1 mobile livestock carousel patch */
+@media(max-width:849px){
+  .homeFishStrip{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-padding:0;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .homeFishStrip::-webkit-scrollbar{display:none}
+  .homeFishCard{
+    flex:0 0 calc(100% - 22px);
+    min-width:calc(100% - 22px);
+    max-width:none;
+    width:auto;
+    height:122px;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    grid-template-columns:48% 52%;
+  }
+  .homeFishCard img{object-position:center center}
+  .homeFishCard[data-fish="glitch"] img{object-position:center 72%}
+}
 </style></head><body><div class="wrap">
 <section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v4.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
 <section id="app" class="hidden"><header><div class="brandMark"><div class="waveLogo">≋</div><div class="brand"><div class="eyebrow">BIOCUBE</div><h1>Mission Control</h1></div></div><div><span id="roleBadge" class="badge hidden">VIEW ONLY</span> <span id="updated" class="pill">SYNCING</span></div></header>
@@ -117,7 +144,7 @@ $('statusDot').style.boxShadow=attention?'0 0 18px #ffd16688':'0 0 18px #26e88b8
 $('latestDate').textContent=tests[0]?new Date(tests[0].tested_at).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'—';
 let homeDefs=[['salinity','Salinity','SG'],['kh','Alkalinity','dKH'],['calcium','Calcium','ppm'],['nitrate','Nitrate','ppm']];
 $('latestHomeTest').innerHTML=homeDefs.map(d=>{let v=latest(d[0]),s=stat(d[0],v==null?null:Number(v));return `<div class="latestTile"><div class="label">${d[1]}</div><div class="value">${fmt(v)} <span class="label">${d[2]}</span></div><div class="${s[0]}" style="font-size:10px">● ${s[1]}</div></div>`}).join('');
-$('homeLivestock').innerHTML=livestock.length?livestock.slice(0,6).map(f=>`<div class="card homeFishCard">${f.photo_url?`<img src="${f.photo_url}" alt="${f.name}">`:`<div style="height:100%;display:grid;place-items:center;font-size:42px">🐠</div>`}<div class="homeFishText"><strong>${f.name}</strong><span>${f.species||'BioCube resident'}</span><div class="fishGood">● ${(f.owner_status||'Monitoring').replaceAll('_',' ')}</div></div></div>`).join(''):'<div class="card">Livestock profiles are ready when you are.</div>';
+$('homeLivestock').innerHTML=livestock.length?livestock.slice(0,6).map(f=>`<div class="card homeFishCard" data-fish="${String(f.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-')}">${f.photo_url?`<img src="${f.photo_url}" alt="${f.name}">`:`<div style="height:100%;display:grid;place-items:center;font-size:42px">🐠</div>`}<div class="homeFishText"><strong>${f.name}</strong><span>${f.species||'BioCube resident'}</span><div class="fishGood">● ${(f.owner_status||'Monitoring').replaceAll('_',' ')}</div></div></div>`).join(''):'<div class="card">Livestock profiles are ready when you are.</div>';
 $('homePhotos').innerHTML=photos.length?photos.slice(0,8).map(x=>`<div class="photoWrap"><img src="${x.photo_url}" alt="${x.caption||'BioCube photo'}"><div class="photoCap">${x.caption||new Date(x.taken_at).toLocaleDateString()}</div></div>`).join(''):'<div class="card small">Tank photos will build your visual timeline here.</div>';
 $('missionBrief').textContent=!tests.length?'Add a water test to begin.':(a!=null&&Number(a)>.05)?'Ammonia detected. Monitor closely.':(n!=null&&Number(n)>0)?`Nitrite ${fmt(n)} ppm. Keep monitoring.`:(nr!=null&&Number(nr)>20)?`Nitrate ${fmt(nr)} ppm. Watch the trend.`:'Parameters look stable.';
 $('homeGoals').innerHTML=(goals.filter(g=>g.status!=='completed').slice(0,1).map(g=>`<div><strong>${g.title}</strong>${g.target?`<div class="small">${g.target}</div>`:''}</div>`).join('')||'<div class="small">No active mission.</div>');
