@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>BioCube Mission Control v4.4.2</title><link rel="manifest" href="manifest.json">
+<title>BioCube Mission Control v4.5</title><link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
@@ -171,7 +171,7 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 <section id="feed" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM JOURNAL</div><h2>Tank Feed</h2></div></div><div id="feedList" class="list"></div></section>
 <section id="pods" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVE FOOD SYSTEM</div><h2>Pod Culture</h2></div></div><div class="card"><h3 id="podStatus">Culture system planned 🦠</h3><p class="muted">Tisbe culture monitoring will live here: feeding, density, harvests, stability checks and recovery guidance.</p></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI CULTURE INSIGHT</div><h3 id="podInsight">Waiting for the culture to come online.</h3></div></section>
 <section id="maintenance" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM CARE</div><h2>Maintenance</h2></div></div><div class="card"><h3>Maintenance module ready for expansion.</h3><p class="muted">Water changes, filter service, ATO, equipment and recurring care will live here.</p></div></section>
-<section id="alex" class="section"><div class="sectionTitle"><div><div class="eyebrow">AI ADVISOR</div><h2>Ask Alex</h2></div></div><div class="card aiCard"><h3>Tank-aware questions, coming through the secure AI layer.</h3><p class="muted">Alex will be able to receive relevant water history, livestock records, goals and pod-culture context. No OpenAI secret will ever live in this public webpage.</p><div class="askBox"><input disabled placeholder="Ask about Glitch, chemistry, pods…"><button disabled>Ask</button></div></div></section>
+<section id="alex" class="section"><div class="sectionTitle"><div><div class="eyebrow">AI ADVISOR</div><h2>Ask Alex</h2></div></div><div class="card aiCard"><h3>Your tank-aware aquarium advisor.</h3><p class="muted">Alex uses your current Mission Control water history, livestock, goals, feed and pod-culture records as context.</p><div class="askBox"><input id="alexQuestion" maxlength="1500" placeholder="Ask about Glitch, chemistry, pods…"><button id="alexAskBtn" class="primary" onclick="askAlex()">Ask</button></div><div id="alexStatus" class="small" style="margin-top:10px"></div><div id="alexAnswer" style="margin-top:12px;white-space:pre-wrap;line-height:1.55"></div></div></section>
 <div class="actions" style="margin-top:12px"><button onclick="loadAll()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div></section></div>
 <nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Fish</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button><button data-tab="alex">🧠<br>Alex</button></nav>
 <dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm"><div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div><div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div><div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div><div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div><div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div><div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div><div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div></form></dialog>
@@ -210,5 +210,36 @@ function renderGoals(){$('goalList').innerHTML=goals.length?goals.map(g=>`<div c
 function renderFeed(){$('feedList').innerHTML=feed.length?feed.map(f=>`<div class="card feedItem"><div class="eyebrow">${(f.event_type||'NOTE').toUpperCase()}</div><h3>${f.title}</h3><div class="small">${new Date(f.event_at).toLocaleString()} • ${f.details||''}</div></div>`).join(''):'<div class="card">No feed events yet.</div>'}
 function renderPods(){let p=pods[0];if(!p)return;$('podStatus').textContent=`${p.species||'Tisbe'} • ${p.status||'Monitoring'}`;$('podInsight').textContent=p.ai_insight||p.notes||'Culture record loaded.'}
 function draw(){let c=$('chart'),x=c.getContext('2d'),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle='#91b7c8';x.font='25px sans-serif';x.fillText('Add more tests to build the trend.',25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle='#55d6ff';x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
+async function askAlex(){
+  const input=$('alexQuestion'),btn=$('alexAskBtn'),status=$('alexStatus'),answer=$('alexAnswer');
+  const question=(input.value||'').trim();
+  if(!question){status.textContent='Ask Alex a question first.';return}
+  btn.disabled=true;input.disabled=true;answer.textContent='';status.textContent='Alex is checking Mission Control…';
+  try{
+    const tankContext={
+      generated_at:new Date().toISOString(),
+      latest_water_test:tests[0]||null,
+      recent_water_tests:tests.slice(0,10),
+      livestock:livestock.filter(f=>f.active!==false).map(f=>({
+        name:f.name,species:f.species,scientific_name:f.scientific_name,
+        owner_status:f.owner_status,feeding_status:f.feeding_status,
+        behavior:f.behavior,notes:f.notes
+      })),
+      active_goals:goals.filter(g=>g.status!=='completed').slice(0,10),
+      recent_feed:feed.slice(0,10),
+      recent_pod_culture:pods.slice(0,10)
+    };
+    const {data,error}=await sb.functions.invoke('ask-alex',{body:{question,tankContext}});
+    if(error)throw error;
+    if(data?.error)throw new Error(data.error);
+    answer.textContent=data?.answer||'Alex returned an empty response.';
+    status.textContent='Tank context synced.';
+  }catch(err){
+    console.error('Ask Alex:',err);
+    status.textContent='Alex could not answer right now. Check the Edge Function logs if this continues.';
+  }finally{
+    btn.disabled=false;input.disabled=false;
+  }
+}
 function openTest(){if(viewerMode)return;$('testForm').reset();$('testDialog').showModal()}$('testForm').addEventListener('submit',async e=>{e.preventDefault();if(viewerMode)return;let f=new FormData(e.target),o={};for(let[k,v]of f.entries())o[k]=k==='notes'?v:(v.trim()===''?null:Number(v));let{error}=await sb.from('water_tests').insert(o);if(error){alert(error.message);return}$('testDialog').close();await loadAll()});boot();
 </script></body></html>
