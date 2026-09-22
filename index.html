@@ -9,7 +9,7 @@
 :root{--bg:#061722;--card:#0c2635;--line:#1b4559;--txt:#effbff;--muted:#91b7c8;--aqua:#55d6ff;--good:#5ce397;--warn:#ffd166;--bad:#ff7070}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#0d384b,#061722 45%);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
 .wrap{max-width:960px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 15px 100px}header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
-h1{margin:0;font-size:27px}.eyebrow{color:var(--aqua);font-size:11px;font-weight:800;letter-spacing:.13em}.muted{color:var(--muted)}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 9px;font-size:11px;color:var(--aqua)}
+h1{margin:0;font-size:27px}.eyebrow{color:var(--aqua);font-size:11px;font-weight:800;letter-spacing:.13em}.muted{color:var(--muted)}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 9px;font-size:11px;color:var(--aqua)}.viewerBadge{display:inline-block;margin-top:6px;border:1px solid var(--warn);border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--warn)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.card{background:linear-gradient(145deg,#0f2e3e,#08202d);border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:0 12px 28px #0003}.full{grid-column:1/-1}
 .label{font-size:12px;color:var(--muted)}.value{font-size:25px;font-weight:800;margin:5px 0}.unit{font-size:12px;color:var(--muted)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}.status{font-size:11px}
 button{border:0;border-radius:13px;padding:11px;background:#123b4e;color:var(--txt);font-weight:750}.primary{background:var(--aqua);color:#03212e}.danger{background:#4b2830}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}
@@ -28,16 +28,16 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#061722e8;backdrop-filt
 <button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="msg"></div></section>
 
 <section id="app" class="hidden">
-<header><div><div class="eyebrow">REEF SYSTEM • CLOUD</div><h1>BioCube 32 🪸</h1><div class="muted" style="font-size:12px">Mission Control</div></div><div class="pill" id="updated">SYNCING…</div></header>
+<header><div><div class="eyebrow">REEF SYSTEM • CLOUD</div><h1>BioCube 32 🪸</h1><div class="muted" style="font-size:12px">Mission Control</div><div id="viewerBadge" class="viewerBadge hidden">VIEW ONLY</div></div><div class="pill" id="updated">SYNCING…</div></header>
 <div class="grid" id="cards"></div>
 <div class="grid" style="margin-top:11px">
 <div class="card full"><div class="label">Tank status</div><h2 id="assessment">Loading…</h2><div class="small">Stability and trends matter more than chasing one isolated number.</div></div>
 <div class="card full"><div class="label">Nitrate trend</div><canvas id="chart" width="800" height="220"></canvas></div>
 <div class="card full"><div class="label">Cloud test history</div><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div>
-<div class="card full"><div class="actions"><button class="primary" onclick="openTest()">＋ Add Test</button><button onclick="loadTests()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div><div id="syncMsg" class="msg muted"></div></div>
+<div class="card full"><div class="actions"><button class="primary ownerOnly" onclick="openTest()">＋ Add Test</button><button onclick="loadTests()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div><div id="syncMsg" class="msg muted"></div></div>
 </div></section></div>
 
-<footer id="footer" class="hidden"><button class="primary" onclick="openTest()">＋ Add Water Test</button><button onclick="loadTests()">↻ Sync</button></footer>
+<footer id="footer" class="hidden"><button class="primary ownerOnly" onclick="openTest()">＋ Add Water Test</button><button onclick="loadTests()">↻ Sync</button></footer>
 
 <dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm">
 <div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div>
@@ -50,20 +50,27 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#061722e8;backdrop-filt
 </form></dialog>
 <script src="config.js"></script><script>
 const cfg=window.BIOCUBE_CONFIG||{}, configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes("YOUR_");
-let sb=null, tests=[];
+let sb=null, tests=[], viewerMode=false;
+const VIEWER_UID="BROTHER_UID_HERE";
 if(configured) sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
 const defs=[["ammonia","Ammonia","ppm"],["nitrite","Nitrite","ppm"],["nitrate","Nitrate","ppm"],["ph","pH",""],["kh","Alkalinity","dKH"],["calcium","Calcium","ppm"],["salinity","Salinity","SG"],["temperature","Temperature","°F"],["phosphate","Phosphate","ppm"],["copper","Copper","ppm"]];
 const $=id=>document.getElementById(id), fmt=v=>v==null||v===""?"—":Number(v).toLocaleString(undefined,{maximumFractionDigits:3});
 function stat(k,v){if(v==null)return["muted","Not tested"];if(k==="ammonia")return v<=.05?["good","Excellent"]:v<=.25?["warn","Watch"]:["bad","High"];if(k==="nitrite")return v===0?["good","Zero"]:["warn","Detectable"];if(k==="nitrate")return v<=20?["good","Good"]:v<=40?["warn","Elevated"]:["bad","High"];if(k==="ph")return v>=7.8&&v<=8.4?["good","Reef range"]:["warn","Check trend"];if(k==="kh")return v>=8&&v<=12?["good","Good"]:["warn","Check trend"];if(k==="calcium")return v>=400&&v<=460?["good","Excellent"]:["warn","Check trend"];if(k==="salinity")return v>=1.024&&v<=1.0265?["good","Reef range"]:["warn","Check"];if(k==="temperature")return v>=76&&v<=80?["good","Good"]:["warn","Check"];if(k==="phosphate")return v>=.02&&v<=.1?["good","Useful reef range"]:["warn","Check"];if(k==="copper")return v===0?["good","Zero"]:["bad","Detected"];return["muted",""];}
 function latest(k){for(let i=0;i<tests.length;i++)if(tests[i][k]!=null)return tests[i][k];return null}
 async function boot(){if(!configured){$("login").classList.remove("hidden");$("loginMsg").innerHTML='<span class="bad">config.js still needs your Supabase Project URL and Publishable key.</span>';return}let {data:{session}}=await sb.auth.getSession();showSession(session);sb.auth.onAuthStateChange((_e,s)=>showSession(s))}
-function showSession(s){$("login").classList.toggle("hidden",!!s);$("app").classList.toggle("hidden",!s);$("footer").classList.toggle("hidden",!s);if(s)loadTests()}
+function showSession(s){
+$("login").classList.toggle("hidden",!!s);$("app").classList.toggle("hidden",!s);$("footer").classList.toggle("hidden",!s);
+viewerMode=!!(s&&s.user&&s.user.id===VIEWER_UID);
+$("viewerBadge").classList.toggle("hidden",!viewerMode);
+document.querySelectorAll(".ownerOnly").forEach(el=>el.classList.toggle("hidden",viewerMode));
+if(s)loadTests()
+}
 async function signIn(){ $("loginMsg").textContent="Signing in…";let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("loginMsg").innerHTML=error?`<span class="bad">${error.message}</span>`:"";}
 async function signOut(){await sb.auth.signOut()}
 async function loadTests(){ $("syncMsg").textContent="Syncing…";let {data,error}=await sb.from("water_tests").select("*").order("tested_at",{ascending:false});if(error){$("syncMsg").innerHTML=`<span class="bad">${error.message}</span>`;return}tests=data||[];$("syncMsg").textContent="Cloud sync complete.";render()}
 function render(){let d=tests[0];$("updated").textContent=d?"Updated "+new Date(d.tested_at).toLocaleString():"NO TESTS YET";$("cards").innerHTML=defs.map(([k,n,u])=>{let v=latest(k),s=stat(k,v==null?null:Number(v));return `<div class="card"><div class="label">${n}</div><div class="value">${fmt(v)} <span class="unit">${u}</span></div><div class="status ${s[0]}">● ${s[1]}</div></div>`}).join("");let a=Number(latest("ammonia")),ni=Number(latest("nitrite"));$("assessment").innerHTML=!tests.length?"Add your first cloud test.":(a<=.05&&ni===0?'<span class="good">Core nitrogen readings look settled.</span>':`<span class="warn">Biofilter still deserves monitoring.</span>`);$("history").innerHTML=tests.map(t=>`<tr><td>${new Date(t.tested_at).toLocaleDateString()}</td><td>${fmt(t.ammonia)}</td><td>${fmt(t.nitrite)}</td><td>${fmt(t.nitrate)}</td><td>${fmt(t.ph)}</td><td>${fmt(t.kh)}</td><td>${fmt(t.calcium)}</td><td>${fmt(t.salinity)}</td></tr>`).join("");draw()}
 function draw(){let c=$("chart"),x=c.getContext("2d"),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle="#91b7c8";x.font="25px sans-serif";x.fillText("Add more tests to build the trend.",25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle="#55d6ff";x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
-function openTest(){$("testForm").reset();$("testDialog").showModal()}
-$("testForm").addEventListener("submit",async e=>{e.preventDefault();let f=new FormData(e.target),o={};for(let [k,v] of f.entries())o[k]=k==="notes"?v:(v.trim()===""?null:Number(v));let {error}=await sb.from("water_tests").insert(o);if(error){alert(error.message);return}$("testDialog").close();await loadTests()});
+function openTest(){if(viewerMode)return;$("testForm").reset();$("testDialog").showModal()}
+$("testForm").addEventListener("submit",async e=>{e.preventDefault();if(viewerMode){alert("This account is view only.");return;}let f=new FormData(e.target),o={};for(let [k,v] of f.entries())o[k]=k==="notes"?v:(v.trim()===""?null:Number(v));let {error}=await sb.from("water_tests").insert(o);if(error){alert(error.message);return}$("testDialog").close();await loadTests()});
 boot();
 </script></body></html>
