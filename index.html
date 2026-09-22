@@ -51,7 +51,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#061722e8;backdrop-filt
 <script src="config.js"></script><script>
 const cfg=window.BIOCUBE_CONFIG||{}, configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes("YOUR_");
 let sb=null, tests=[], viewerMode=false;
-const VIEWER_UID="BROTHER_UID_HERE";
+const VIEWER_UID="05182544-7a84-4551-b82c-0f3ba0a7ead9";
 if(configured) sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
 const defs=[["ammonia","Ammonia","ppm"],["nitrite","Nitrite","ppm"],["nitrate","Nitrate","ppm"],["ph","pH",""],["kh","Alkalinity","dKH"],["calcium","Calcium","ppm"],["salinity","Salinity","SG"],["temperature","Temperature","°F"],["phosphate","Phosphate","ppm"],["copper","Copper","ppm"]];
 const $=id=>document.getElementById(id), fmt=v=>v==null||v===""?"—":Number(v).toLocaleString(undefined,{maximumFractionDigits:3});
