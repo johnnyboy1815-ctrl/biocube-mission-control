@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>BioCube Mission Control v4.5.2</title><link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 45% -15%,#0c3550 0,#03111c 38%,var(--bg) 78%);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}.hidden{display:none!important}
+.wrap{max-width:1280px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom))}.eyebrow{font-size:10px;letter-spacing:.16em;font-weight:900;color:var(--aqua)}h1,h2,h3,p{margin-top:0}.muted,.small{color:var(--muted)}.small{font-size:11px;line-height:1.45}.card{background:linear-gradient(145deg,#082235e8,#04131fe8);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 12px 34px #0007,0 0 28px var(--glow);backdrop-filter:blur(14px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.brand h1{margin:2px 0 0;font-size:25px}.pill,.badge{border:1px solid var(--line);border-radius:999px;padding:7px 9px;font-size:10px;font-weight:800}.badge{color:var(--warn);border-color:#755f28}.hero{min-height:235px;position:relative;overflow:hidden;display:flex;align-items:flex-end;background:linear-gradient(180deg,#0c3c50,#061722)}.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.76}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,#03121bd9 100%)}.heroText{position:relative;z-index:2}.hero h2{font-size:28px;margin-bottom:5px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.full{grid-column:1/-1}.value{font-size:24px;font-weight:850;margin:5px 0}.label{font-size:11px;color:var(--muted)}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+nav{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;overflow-x:auto;gap:5px;padding:8px 9px calc(8px + env(safe-area-inset-bottom));background:#04131df2;border-top:1px solid var(--line);backdrop-filter:blur(18px)}nav button{min-width:72px;flex:1;border:0;background:transparent;color:var(--muted);padding:7px 5px;border-radius:12px;font-size:10px;font-weight:800}nav button.active{background:#123b4e;color:var(--aqua)}button{border:0;border-radius:13px;padding:11px;background:#123b4e;color:var(--txt);font-weight:800}.primary{background:var(--aqua);color:#03212e}.danger{background:#4b2830}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}.section{display:none}.section.active{display:block}.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:6px 0 12px}.sectionTitle h2{margin:0}.list{display:grid;gap:10px}.fish{display:grid;grid-template-columns:82px 1fr;gap:12px;align-items:center}.fishPhoto{width:82px;height:82px;border-radius:16px;background:#061b27;object-fit:cover;border:1px solid var(--line)}.statusDot{font-size:11px}.feedItem{border-left:2px solid var(--aqua);padding-left:12px}.tabsHint{font-size:11px;color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:11px}th,td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted)}.scroll{overflow:auto}canvas{width:100%;height:150px;background:#061b27;border-radius:14px}dialog{border:1px solid var(--line);border-radius:20px;background:#092433;color:var(--txt);width:min(92vw,560px);padding:18px}dialog::backdrop{background:#000b}form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#061b27;color:var(--txt);font-size:16px}.span2{grid-column:1/-1}#login{max-width:440px;margin:14vh auto}.aiCard{border-color:#35627a;background:linear-gradient(145deg,#102f44,#0b2334)}.askBox{display:flex;gap:8px}.askBox input{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:#061b27;color:var(--txt)}
+.homeFishStrip{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scroll-snap-type:x mandatory}
+.homeFishCard{min-width:145px;max-width:145px;scroll-snap-align:start;position:relative;overflow:hidden;padding:0;height:185px}
+.homeFishCard img{width:100%;height:100%;object-fit:cover;display:block}
+.homeFishShade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,#021018ee 100%)}
+.homeFishText{position:absolute;left:11px;right:11px;bottom:10px;z-index:2}
+.homeFishText strong{display:block;font-size:17px}
+.homeFishText span{font-size:10px;color:#b7d5df}
+.miniStats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.miniStat{padding:10px;text-align:center}
+.miniStat .value{font-size:17px;margin:2px 0}.miniStat .label{font-size:9px}
+.homeBlock{margin-top:12px}.homeBlockHead{display:flex;justify-content:space-between;align-items:end;margin:0 2px 7px}
+.homeBlockHead h3{margin:0;font-size:17px}.hero{min-height:300px}.heroText .homeChip{display:inline-block;background:#03141dcc;border:1px solid #ffffff26;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800}
+.photoRail{display:flex;gap:8px;overflow-x:auto}.photoRail img{width:125px;height:95px;object-fit:cover;border-radius:14px;border:1px solid var(--line)}
+
+.commandHero{display:grid;gap:10px}
+.tankStatusCard{display:flex;align-items:center;gap:12px}
+.bigDot{width:18px;height:18px;border-radius:50%;background:var(--good);box-shadow:0 0 18px #26e88b88;flex:0 0 auto}
+.tankStatusCard h3{margin:0;font-size:20px;color:#8ee8ff}
+.latestPanel{margin-top:10px}.latestHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.latestGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.latestTile{background:#0a2638;border:1px solid #123a50;border-radius:12px;padding:10px}
+.latestTile .value{font-size:19px;margin:3px 0}
+.sectionIconTitle{display:flex;align-items:center;gap:8px}.sectionIconTitle .icon{font-size:22px}
+.homeFishCard{min-width:220px;max-width:280px;height:118px;display:grid;grid-template-columns:42% 58%;background:#061824}
+.homeFishCard img{height:100%;width:100%;object-fit:cover}
+.homeFishShade{display:none}.homeFishText{position:static;padding:13px 11px;display:flex;flex-direction:column;justify-content:center}
+.homeFishText strong{font-size:18px}.homeFishText span{font-size:11px;margin-top:3px}.fishGood{color:var(--good);margin-top:8px;font-size:11px;font-weight:800}
+.photoRail img{width:175px;height:105px;border-radius:12px}.photoWrap{min-width:175px}.photoCap{font-size:10px;color:var(--muted);padding:5px 2px 0}
+.homeBottomGrid{display:grid;gap:10px;margin-top:12px}
+.heroText{left:0}.heroText h2{font-size:23px;margin-bottom:0}.heroSub{font-size:11px;color:#d7edf6}
+.brandMark{display:flex;align-items:center;gap:10px}.waveLogo{font-size:31px;color:var(--aqua);line-height:1}
+.brand h1{font-size:24px}.brand .eyebrow{color:#a7dff2}
+@media(min-width:850px){
+.commandHero{grid-template-columns:2fr 1fr;align-items:stretch}.hero{min-height:390px}
+.commandSide{display:flex;flex-direction:column;gap:10px}.latestPanel{margin-top:0;flex:1}
+.homeFishStrip{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}.homeFishCard{min-width:0;max-width:none;width:100%}
+.homeBottomGrid{grid-template-columns:1.6fr 1fr}
+.photoRail{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible}.photoWrap{min-width:0}.photoRail img{width:100%;height:110px}
+}
+@media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}nav{left:50%;transform:translateX(-50%);max-width:950px;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}.hero{min-height:320px}}
+
+/* V4.4 visual command center */
+.heroText .eyebrow,.heroSub{display:none}.heroText h2{font-size:14px;margin:0;letter-spacing:.02em}.heroText h2{font-size:0}.heroText h2:after{content:"32G BioCube";font-size:14px}
+.tankStatusCard .small{display:none}.tankStatusCard{padding:14px 16px}.tankStatusCard h3{font-size:19px}.latestPanel{padding:14px}.latestTile{padding:10px}.latestTile .value{font-size:21px}
+.homeBlockHead .sectionIconTitle .icon{display:none}.homeBlockHead{margin-bottom:9px}.homeBlockHead h3{font-size:19px}.homeBlockHead>.small{font-size:10px}.sectionIconTitle{gap:0}
+.homeFishStrip{gap:9px}.homeFishCard{min-width:255px;max-width:290px;height:122px;grid-template-columns:48% 52%;border-radius:15px}.homeFishText{padding:11px}.homeFishText strong{font-size:19px}.homeFishText span{font-size:10px}.fishGood{margin-top:6px;font-size:10px}
+.photoRail{gap:9px}.photoWrap{min-width:190px}.photoRail img{width:190px;height:125px}.photoCap{font-size:10px}
+.homeBottomGrid .sectionIconTitle .icon{display:none}.homeBottomGrid .sectionIconTitle .small{display:none}.homeBottomGrid .card{padding:16px}.homeBottomGrid h3{font-size:18px;line-height:1.25}.aiCard #missionBrief{font-size:17px}
+nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:block;font-size:20px;line-height:22px;margin-bottom:3px}nav button:after{display:block;font-size:10px}nav button[data-tab="home"]:before{content:"⌂"}nav button[data-tab="home"]:after{content:"Home"}nav button[data-tab="water"]:before{content:"◉"}nav button[data-tab="water"]:after{content:"Water"}nav button[data-tab="livestock"]:before{content:"◁"}nav button[data-tab="livestock"]:after{content:"Fish"}nav button[data-tab="goals"]:before{content:"◎"}nav button[data-tab="goals"]:after{content:"Goals"}nav button[data-tab="feed"]:before{content:"▤"}nav button[data-tab="feed"]:after{content:"Feed"}nav button[data-tab="pods"]:before{content:"◌"}nav button[data-tab="pods"]:after{content:"Pods"}nav button[data-tab="maintenance"]:before{content:"⚙︎"}nav button[data-tab="maintenance"]:after{content:"Care"}nav button[data-tab="alex"]:before{content:"✦"}nav button[data-tab="alex"]:after{content:"Alex"}
+@media(max-width:849px){.wrap{padding-left:12px;padding-right:12px}.brand h1{font-size:22px}.hero{min-height:285px}.commandHero{gap:9px}.homeBlock{margin-top:16px}.latestGrid{gap:7px}.latestPanel button{padding:10px}.homeBottomGrid{gap:9px}.actions{margin-bottom:4px!important}}
+@media(min-width:850px){.heroText h2:after{font-size:15px}.homeFishCard{height:128px}.photoRail img{height:125px}.commandHero{grid-template-columns:2.15fr 1fr}.homeBottomGrid{grid-template-columns:1.55fr 1fr}}
+
+/* V4.4.1 mobile livestock carousel patch */
+@media(max-width:849px){
+  .homeFishStrip{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-padding:0;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .homeFishStrip::-webkit-scrollbar{display:none}
+  .homeFishCard{
+    flex:0 0 calc(100% - 22px);
+    min-width:calc(100% - 22px);
+    max-width:none;
+    width:auto;
+    height:122px;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    grid-template-columns:48% 52%;
+  }
+  .homeFishCard img{object-position:center center}
+  .homeFishCard[data-fish="glitch"] img{object-position:center 72%}
+}
+
+/* V4.4.2 definitive mobile Meet the Reef fix */
+@media(max-width:849px){
+  .homeFishStrip{
+    display:grid;
+    grid-auto-flow:column;
+    grid-auto-columns:100%;
+    gap:10px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-padding:0;
+    padding:2px 0 6px;
+    scrollbar-width:none;
+  }
+  .homeFishStrip::-webkit-scrollbar{display:none}
+  .homeFishCard{
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    height:126px;
+    display:grid;
+    grid-template-columns:minmax(0,44%) minmax(0,56%);
+    overflow:hidden;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    padding:0;
+  }
+  .homeFishCard img{
+    width:100%;
+    height:126px;
+    min-width:0;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+  .homeFishText{
+    min-width:0;
+    overflow:hidden;
+    padding:12px 14px;
+    position:static;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .homeFishText strong,.homeFishText span,.fishGood{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .homeFishText strong{font-size:19px;white-space:nowrap}
+  .homeFishText span{font-size:10px;white-space:normal;line-height:1.3}
+  .fishGood{font-size:10px;white-space:nowrap}
+  .homeFishCard[data-fish="glitch"] img{object-position:center 78%}
+}
+
+
+/* V4.5.1 mobile navigation: keep Alex permanently visible */
+@media(max-width:719px){
+  nav{overflow-x:hidden}
+  nav button{min-width:0;flex:1 1 20%}
+  nav button[data-tab="feed"],
+  nav button[data-tab="pods"],
+  nav button[data-tab="maintenance"]{display:none}
+}
+
+
+/* V4.5.2 iPhone nav + Glitch crop correction */
+@media(max-width:719px){
+  nav{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    overflow:hidden;
+  }
+  nav button{
+    display:block;
+    width:auto;
+    min-width:0;
+    max-width:none;
+    flex:none;
+  }
+  nav button[data-tab="feed"],
+  nav button[data-tab="pods"],
+  nav button[data-tab="maintenance"]{display:none!important}
+  nav button[data-tab="alex"]{display:block!important}
+}
+
+/* Glitch's source photo has lots of surrounding sand, so enlarge only his image. */
+.homeFishCard[data-fish="glitch"] img{
+  transform:scale(1.75);
+  transform-origin:43% 58%;
+  object-position:center center!important;
+}
+
+</style></head><body><div class="wrap">
+<section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v4.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
+<section id="app" class="hidden"><header><div class="brandMark"><div class="waveLogo">≋</div><div class="brand"><div class="eyebrow">BIOCUBE</div><h1>Mission Control</h1></div></div><div><span id="roleBadge" class="badge hidden">VIEW ONLY</span> <span id="updated" class="pill">SYNCING</span></div></header>
+<section id="home" class="section active">
+<div class="commandHero">
+  <div class="hero card"><img id="tankHero" class="hidden" alt="Current BioCube"><div class="heroText"><div class="eyebrow">32G BIOCUBE</div><h2>32G BioCube</h2></div></div>
+  <div class="commandSide">
+    <div class="card tankStatusCard"><div id="statusDot" class="bigDot"></div><div><div class="eyebrow">TANK STATUS</div><h3 id="homeStatus">Loading the reef…</h3><div class="small">Live status from your latest recorded parameters</div></div></div>
+    <div class="card latestPanel"><div class="latestHead"><div class="eyebrow">LATEST WATER TEST</div><div id="latestDate" class="small">—</div></div><div id="latestHomeTest" class="latestGrid"></div><button style="width:100%;margin-top:10px" onclick="switchTab('water')">View Full Test History →</button></div>
+  </div>
+</div>
+
+<div class="homeBlock"><div class="homeBlockHead"><div class="sectionIconTitle"><h3>Meet the Reef</h3></div><span class="small" onclick="switchTab('livestock')">View All Livestock →</span></div><div id="homeLivestock" class="homeFishStrip"></div></div>
+
+<div class="homeBlock"><div class="homeBlockHead"><div class="sectionIconTitle"><h3>Tank Evolution</h3></div><span class="small">View Photos →</span></div><div id="homePhotos" class="photoRail"></div></div>
+
+<div class="homeBottomGrid">
+  <div class="card"><div class="sectionIconTitle"><div><div class="eyebrow">CURRENT MISSION</div><div class="small">What we're focused on right now</div></div></div><div id="homeGoals" class="list" style="margin-top:10px"></div></div>
+  <div class="card aiCard"><div class="sectionIconTitle"><div><div class="eyebrow">ALEX'S QUICK READ</div><div class="small">Rule engine for now</div></div></div><h3 id="missionBrief" style="margin:12px 0 0">Waiting for current data.</h3></div>
+</div>
+</section>
+<section id="water" class="section"><div class="sectionTitle"><div><div class="eyebrow">CHEMISTRY</div><h2>Water & Analytics</h2></div><button class="primary ownerOnly" onclick="openTest()">＋ Test</button></div><div class="grid" id="waterCards"></div><div class="card" style="margin-top:10px"><div class="label">Nitrate trend</div><canvas id="chart" width="800" height="220"></canvas></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI INSIGHT</div><h3 id="waterInsight">Trend engine ready.</h3><div class="small">Automatic AI analysis will be stored with the data rather than regenerated on every page load.</div></div><div class="card" style="margin-top:10px"><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div></section>
+<section id="livestock" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVING SYSTEM</div><h2>Livestock</h2></div></div><div id="livestockList" class="list"></div></section>
+<section id="goals" class="section"><div class="sectionTitle"><div><div class="eyebrow">NEXT MOVES</div><h2>Goals & Alerts</h2></div></div><div id="goalList" class="list"></div></section>
+<section id="feed" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM JOURNAL</div><h2>Tank Feed</h2></div></div><div id="feedList" class="list"></div></section>
+<section id="pods" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVE FOOD SYSTEM</div><h2>Pod Culture</h2></div></div><div class="card"><h3 id="podStatus">Culture system planned 🦠</h3><p class="muted">Tisbe culture monitoring will live here: feeding, density, harvests, stability checks and recovery guidance.</p></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI CULTURE INSIGHT</div><h3 id="podInsight">Waiting for the culture to come online.</h3></div></section>
+<section id="maintenance" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM CARE</div><h2>Maintenance</h2></div></div><div class="card"><h3>Maintenance module ready for expansion.</h3><p class="muted">Water changes, filter service, ATO, equipment and recurring care will live here.</p></div></section>
+<section id="alex" class="section"><div class="sectionTitle"><div><div class="eyebrow">AI ADVISOR</div><h2>Ask Alex</h2></div></div><div class="card aiCard"><h3>Your tank-aware aquarium advisor.</h3><p class="muted">Alex uses your current Mission Control water history, livestock, goals, feed and pod-culture records as context.</p><div class="askBox"><input id="alexQuestion" maxlength="1500" placeholder="Ask about Glitch, chemistry, pods…"><button id="alexAskBtn" class="primary" onclick="askAlex()">Ask</button></div><div id="alexStatus" class="small" style="margin-top:10px"></div><div id="alexAnswer" style="margin-top:12px;white-space:pre-wrap;line-height:1.55"></div></div></section>
+<div class="actions" style="margin-top:12px"><button onclick="loadAll()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div></section></div>
+<nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Fish</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="alex">🧠<br>Alex</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button></nav>
+<dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm"><div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div><div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div><div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div><div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div><div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div><div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div><div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div></form></dialog>
+<script src="config.js"></script><script>
+const OWNER='1397f638-c599-4709-9892-571fad9c8758',VIEWERS=['05182544-7a84-4551-b82c-0f3ba0a7ead9','0ce96dba-397e-4dc9-a9d0-3623f3fb1ff3'];
+const cfg=window.BIOCUBE_CONFIG||{},configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes('YOUR_');let sb=null,tests=[],livestock=[],goals=[],feed=[],pods=[],photos=[],viewerMode=false;if(configured)sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id),fmt=v=>v==null||v===''?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:3});const defs=[['ammonia','Ammonia','ppm'],['nitrite','Nitrite','ppm'],['nitrate','Nitrate','ppm'],['ph','pH',''],['kh','Alkalinity','dKH'],['calcium','Calcium','ppm'],['salinity','Salinity','SG'],['temperature','Temperature','°F'],['phosphate','Phosphate','ppm'],['copper','Copper','ppm']];
+function stat(k,v){if(v==null)return['muted','Not tested'];if(k==='ammonia')return v<=.05?['good','Excellent']:v<=.25?['warn','Watch']:['bad','High'];if(k==='nitrite')return v===0?['good','Zero']:['warn','Detectable'];if(k==='nitrate')return v<=20?['good','Good']:v<=40?['warn','Elevated']:['bad','High'];if(k==='ph')return v>=7.8&&v<=8.4?['good','Reef range']:['warn','Check trend'];if(k==='kh')return v>=8&&v<=12?['good','Good']:['warn','Check trend'];if(k==='calcium')return v>=400&&v<=460?['good','Excellent']:['warn','Check trend'];if(k==='salinity')return v>=1.024&&v<=1.0265?['good','Reef range']:['warn','Check'];if(k==='temperature')return v>=76&&v<=80?['good','Good']:['warn','Check'];if(k==='phosphate')return v>=.02&&v<=.1?['good','Useful reef range']:['warn','Check'];if(k==='copper')return v===0?['good','Zero']:['bad','Detected'];return['muted','']}
+function latest(k){for(const t of tests)if(t[k]!=null)return t[k];return null}function card(k,n,u){let v=latest(k),s=stat(k,v==null?null:Number(v));return `<div class="card"><div class="label">${n}</div><div class="value">${fmt(v)} <span class="label">${u}</span></div><div class="statusDot ${s[0]}">● ${s[1]}</div></div>`}
+async function boot(){if(!configured){$('login').classList.remove('hidden');$('loginMsg').innerHTML='<span class="bad">config.js needs the existing Supabase Project URL and Publishable key.</span>';return}let{data:{session}}=await sb.auth.getSession();showSession(session);sb.auth.onAuthStateChange((_e,s)=>showSession(s));document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab))}
+function showSession(s){$('login').classList.toggle('hidden',!!s);$('app').classList.toggle('hidden',!s);$('nav').classList.toggle('hidden',!s);if(!s)return;viewerMode=s.user.id!==OWNER;$('roleBadge').classList.toggle('hidden',!viewerMode);document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hidden',viewerMode));loadAll()}
+async function signIn(){$('loginMsg').textContent='Signing in…';let{error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginMsg').innerHTML=error?`<span class="bad">${error.message}</span>`:''}async function signOut(){await sb.auth.signOut()}
+function switchTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
+async function safeTable(name,order='created_at'){let{data,error}=await sb.from(name).select('*').order(order,{ascending:false});if(error){console.warn(name,error.message);return[]}return data||[]}
+async function loadAll(){let wt=await safeTable('water_tests','tested_at');tests=wt;[livestock,goals,feed,pods,photos]=await Promise.all([safeTable('livestock'),safeTable('goals'),safeTable('tank_feed','event_at'),safeTable('pod_culture','logged_at'),safeTable('tank_photos','taken_at')]);render();$('updated').textContent=tests[0]?'Updated '+new Date(tests[0].tested_at).toLocaleDateString():'NO TESTS'}
+function render(){renderWater();renderHome();renderLivestock();renderGoals();renderFeed();renderPods()}
+function renderWater(){$('waterCards').innerHTML=defs.map(d=>card(...d)).join('');if($('quickCards'))$('quickCards').innerHTML='';$('history').innerHTML=tests.map(t=>`<tr><td>${new Date(t.tested_at).toLocaleDateString()}</td><td>${fmt(t.ammonia)}</td><td>${fmt(t.nitrite)}</td><td>${fmt(t.nitrate)}</td><td>${fmt(t.ph)}</td><td>${fmt(t.kh)}</td><td>${fmt(t.calcium)}</td><td>${fmt(t.salinity)}</td></tr>`).join('');let a=Number(latest('ammonia')),n=Number(latest('nitrite')),nr=Number(latest('nitrate'));$('waterInsight').textContent=!tests.length?'Log a test to begin analytics.':a>.05?'Ammonia deserves attention before additional livestock changes.':n>0?'Ammonia is controlled, but nitrite remains the current cycle milestone.':nr>20?'Core cycle readings are settled; nitrate trend deserves monitoring.':'Core nitrogen readings currently look settled.';draw()}
+function renderHome(){
+let p=photos.find(x=>x.is_current)||photos[0];
+if(p?.photo_url){$('tankHero').src=p.photo_url;$('tankHero').classList.remove('hidden')}
+let n=latest('nitrite'),a=latest('ammonia'),nr=latest('nitrate');
+let attention=(a!=null&&Number(a)>.05)||(n!=null&&Number(n)>0);
+$('homeStatus').textContent=!tests.length?'Awaiting Water Test':attention?'Needs Attention':'All Systems Good';
+$('statusDot').style.background=attention?'var(--warn)':'var(--good)';
+$('statusDot').style.boxShadow=attention?'0 0 18px #ffd16688':'0 0 18px #26e88b88';
+$('latestDate').textContent=tests[0]?new Date(tests[0].tested_at).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}):'—';
+let homeDefs=[['salinity','Salinity','SG'],['kh','Alkalinity','dKH'],['calcium','Calcium','ppm'],['nitrate','Nitrate','ppm']];
+$('latestHomeTest').innerHTML=homeDefs.map(d=>{let v=latest(d[0]),s=stat(d[0],v==null?null:Number(v));return `<div class="latestTile"><div class="label">${d[1]}</div><div class="value">${fmt(v)} <span class="label">${d[2]}</span></div><div class="${s[0]}" style="font-size:10px">● ${s[1]}</div></div>`}).join('');
+$('homeLivestock').innerHTML=livestock.length?livestock.slice(0,6).map(f=>`<div class="card homeFishCard" data-fish="${String(f.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-')}">${f.photo_url?`<img src="${f.photo_url}" alt="${f.name}">`:`<div style="height:100%;display:grid;place-items:center;font-size:42px">🐠</div>`}<div class="homeFishText"><strong>${f.name}</strong><span>${f.species||'BioCube resident'}</span><div class="fishGood">● ${(f.owner_status||'Monitoring').replaceAll('_',' ')}</div></div></div>`).join(''):'<div class="card">Livestock profiles are ready when you are.</div>';
+$('homePhotos').innerHTML=photos.length?photos.slice(0,8).map(x=>`<div class="photoWrap"><img src="${x.photo_url}" alt="${x.caption||'BioCube photo'}"><div class="photoCap">${x.caption||new Date(x.taken_at).toLocaleDateString()}</div></div>`).join(''):'<div class="card small">Tank photos will build your visual timeline here.</div>';
+$('missionBrief').textContent=!tests.length?'Add a water test to begin.':(a!=null&&Number(a)>.05)?'Ammonia detected. Monitor closely.':(n!=null&&Number(n)>0)?`Nitrite ${fmt(n)} ppm. Keep monitoring.`:(nr!=null&&Number(nr)>20)?`Nitrate ${fmt(nr)} ppm. Watch the trend.`:'Parameters look stable.';
+$('homeGoals').innerHTML=(goals.filter(g=>g.status!=='completed').slice(0,1).map(g=>`<div><strong>${g.title}</strong>${g.target?`<div class="small">${g.target}</div>`:''}</div>`).join('')||'<div class="small">No active mission.</div>');
+}
+function renderLivestock(){$('livestockList').innerHTML=livestock.length?livestock.map(f=>`<div class="card fish"><img class="fishPhoto" src="${f.photo_url||''}" onerror="this.style.visibility='hidden'" alt=""><div><div class="eyebrow">${(f.owner_status||'status').toUpperCase()}</div><h3 style="margin:3px 0">${f.name}</h3><div class="small">${f.species||''}${f.scientific_name?' • '+f.scientific_name:''}</div><p class="small" style="margin:7px 0 0">${f.behavior||f.feeding_status||f.notes||'Profile ready for updates.'}</p>${f.ai_status?`<div class="small"><strong>AI:</strong> ${f.ai_status}</div>`:''}</div></div>`).join(''):'<div class="card">Run the v4 database setup to activate livestock profiles.</div>'}
+function renderGoals(){$('goalList').innerHTML=goals.length?goals.map(g=>`<div class="card"><div class="eyebrow">${g.category||'GOAL'} • ${(g.priority||'normal').toUpperCase()}</div><h3>${g.title}</h3><div class="small">${g.target||g.notes||''}</div></div>`).join(''):'<div class="card">Goals module is waiting for the v4 database setup.</div>'}
+function renderFeed(){$('feedList').innerHTML=feed.length?feed.map(f=>`<div class="card feedItem"><div class="eyebrow">${(f.event_type||'NOTE').toUpperCase()}</div><h3>${f.title}</h3><div class="small">${new Date(f.event_at).toLocaleString()} • ${f.details||''}</div></div>`).join(''):'<div class="card">No feed events yet.</div>'}
+function renderPods(){let p=pods[0];if(!p)return;$('podStatus').textContent=`${p.species||'Tisbe'} • ${p.status||'Monitoring'}`;$('podInsight').textContent=p.ai_insight||p.notes||'Culture record loaded.'}
+function draw(){let c=$('chart'),x=c.getContext('2d'),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle='#91b7c8';x.font='25px sans-serif';x.fillText('Add more tests to build the trend.',25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle='#55d6ff';x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
+async function askAlex(){
+  const input=$('alexQuestion'),btn=$('alexAskBtn'),status=$('alexStatus'),answer=$('alexAnswer');
+  const question=(input.value||'').trim();
+  if(!question){status.textContent='Ask Alex a question first.';return}
+  btn.disabled=true;input.disabled=true;answer.textContent='';status.textContent='Alex is checking Mission Control…';
+  try{
+    const tankContext={
+      generated_at:new Date().toISOString(),
+      latest_water_test:tests[0]||null,
+      recent_water_tests:tests.slice(0,10),
+      livestock:livestock.filter(f=>f.active!==false).map(f=>({
+        name:f.name,species:f.species,scientific_name:f.scientific_name,
+        owner_status:f.owner_status,feeding_status:f.feeding_status,
+        behavior:f.behavior,notes:f.notes
+      })),
+      active_goals:goals.filter(g=>g.status!=='completed').slice(0,10),
+      recent_feed:feed.slice(0,10),
+      recent_pod_culture:pods.slice(0,10)
+    };
+    const {data,error}=await sb.functions.invoke('ask-alex',{body:{question,tankContext}});
+    if(error)throw error;
+    if(data?.error)throw new Error(data.error);
+    answer.textContent=data?.answer||'Alex returned an empty response.';
+    status.textContent='Tank context synced.';
+  }catch(err){
+    console.error('Ask Alex:',err);
+    status.textContent='Alex could not answer right now. Check the Edge Function logs if this continues.';
+  }finally{
+    btn.disabled=false;input.disabled=false;
+  }
+}
+function openTest(){if(viewerMode)return;$('testForm').reset();$('testDialog').showModal()}$('testForm').addEventListener('submit',async e=>{e.preventDefault();if(viewerMode)return;let f=new FormData(e.target),o={};for(let[k,v]of f.entries())o[k]=k==='notes'?v:(v.trim()===''?null:Number(v));let{error}=await sb.from('water_tests').insert(o);if(error){alert(error.message);return}$('testDialog').close();await loadAll()});boot();
+</script></body></html>
