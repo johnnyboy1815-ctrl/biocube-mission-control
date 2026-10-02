@@ -23,7 +23,50 @@ nav{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;overflow-x:au
 .homeBlock{margin-top:12px}.homeBlockHead{display:flex;justify-content:space-between;align-items:end;margin:0 2px 7px}
 .homeBlockHead h3{margin:0;font-size:17px}.hero{min-height:300px}.heroText .homeChip{display:inline-block;background:#03141dcc;border:1px solid #ffffff26;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:800}
 .photoRail{display:flex;gap:8px;overflow-x:auto}.photoRail img{width:125px;height:95px;object-fit:cover;border-radius:14px;border:1px solid var(--line)}
-
+/* V5 Livestock Hub */
+.livestockHub{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.livestockCategory{
+  min-height:145px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform .15s ease,border-color .15s ease;
+}
+.livestockCategory:active{transform:scale(.98)}
+.livestockCategoryIcon{font-size:32px;line-height:1}
+.livestockCategory h3{font-size:18px;margin:12px 0 3px}
+.livestockCategoryCount{font-size:11px;color:var(--muted)}
+.livestockCategoryPreview{
+  margin-top:10px;
+  display:flex;
+}
+.livestockCategoryPreview img{
+  width:30px;
+  height:30px;
+  object-fit:cover;
+  border-radius:50%;
+  border:2px solid #082235;
+  margin-right:-7px;
+}
+.livestockBack{
+  margin-bottom:12px;
+  background:transparent;
+  border:1px solid var(--line);
+  padding:8px 11px;
+}
+.livestockCategoryHeader{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.livestockCategoryHeader .icon{font-size:30px}
+  
 .commandHero{display:grid;gap:10px}
 .tankStatusCard{display:flex;align-items:center;gap:12px}
 .bigDot{width:18px;height:18px;border-radius:50%;background:var(--good);box-shadow:0 0 18px #26e88b88;flex:0 0 auto}
@@ -197,7 +240,22 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 </div>
 </section>
 <section id="water" class="section"><div class="sectionTitle"><div><div class="eyebrow">CHEMISTRY</div><h2>Water & Analytics</h2></div><button class="primary ownerOnly" onclick="openTest()">＋ Test</button></div><div class="grid" id="waterCards"></div><div class="card" style="margin-top:10px"><div class="label">Nitrate trend</div><canvas id="chart" width="800" height="220"></canvas></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI INSIGHT</div><h3 id="waterInsight">Trend engine ready.</h3><div class="small">Automatic AI analysis will be stored with the data rather than regenerated on every page load.</div></div><div class="card" style="margin-top:10px"><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div></section>
-<section id="livestock" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVING SYSTEM</div><h2>Livestock</h2></div></div><div id="livestockList" class="list"></div></section>
+<section id="livestock" class="section">
+  <div class="sectionTitle">
+    <div>
+      <div class="eyebrow">LIVING SYSTEM</div>
+      <h2 id="livestockTitle">Livestock</h2>
+    </div>
+  </div>
+
+  <div id="livestockHub" class="livestockHub"></div>
+
+  <div id="livestockCategoryView" class="hidden">
+    <button class="livestockBack" onclick="showLivestockHub()">← All Livestock</button>
+    <div id="livestockCategoryHeader" class="livestockCategoryHeader"></div>
+    <div id="livestockList" class="list"></div>
+  </div>
+</section>
 <section id="goals" class="section"><div class="sectionTitle"><div><div class="eyebrow">NEXT MOVES</div><h2>Goals & Alerts</h2></div></div><div id="goalList" class="list"></div></section>
 <section id="feed" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM JOURNAL</div><h2>Tank Feed</h2></div></div><div id="feedList" class="list"></div></section>
 <section id="pods" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVE FOOD SYSTEM</div><h2>Pod Culture</h2></div></div><div class="card"><h3 id="podStatus">Culture system planned 🦠</h3><p class="muted">Tisbe culture monitoring will live here: feeding, density, harvests, stability checks and recovery guidance.</p></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI CULTURE INSIGHT</div><h3 id="podInsight">Waiting for the culture to come online.</h3></div></section>
@@ -236,7 +294,181 @@ $('homePhotos').innerHTML=photos.length?photos.slice(0,8).map(x=>`<div class="ph
 $('missionBrief').textContent=!tests.length?'Add a water test to begin.':(a!=null&&Number(a)>.05)?'Ammonia detected. Monitor closely.':(n!=null&&Number(n)>0)?`Nitrite ${fmt(n)} ppm. Keep monitoring.`:(nr!=null&&Number(nr)>20)?`Nitrate ${fmt(nr)} ppm. Watch the trend.`:'Parameters look stable.';
 $('homeGoals').innerHTML=(goals.filter(g=>g.status!=='completed').slice(0,1).map(g=>`<div><strong>${g.title}</strong>${g.target?`<div class="small">${g.target}</div>`:''}</div>`).join('')||'<div class="small">No active mission.</div>');
 }
-function renderLivestock(){$('livestockList').innerHTML=livestock.length?livestock.map(f=>`<div class="card fish"><img class="fishPhoto" src="${f.photo_url||''}" onerror="this.style.visibility='hidden'" alt=""><div><div class="eyebrow">${(f.owner_status||'status').toUpperCase()}</div><h3 style="margin:3px 0">${f.name}</h3><div class="small">${f.species||''}${f.scientific_name?' • '+f.scientific_name:''}</div><p class="small" style="margin:7px 0 0">${f.behavior||f.feeding_status||f.notes||'Profile ready for updates.'}</p>${f.ai_status?`<div class="small"><strong>AI:</strong> ${f.ai_status}</div>`:''}</div></div>`).join(''):'<div class="card">Run the v4 database setup to activate livestock profiles.</div>'}
+const livestockCategories=[
+  {
+    key:'fish',
+    title:'Fish',
+    icon:'🐠',
+    matches:['fish']
+  },
+  {
+    key:'coral',
+    title:'Corals',
+    icon:'🪸',
+    matches:['coral','corals']
+  },
+  {
+    key:'cleanup',
+    title:'Cleanup Crew',
+    icon:'🐌',
+    matches:['cleanup crew','clean up crew','cleanup','cuc','invertebrate','invertebrates']
+  },
+  {
+    key:'pods',
+    title:'Pods / Microfauna',
+    icon:'🦠',
+    matches:['pods','pod','microfauna','copepods','copepod']
+  }
+];
+
+function livestockCategoryFor(item){
+  const category=String(item.category||'').trim().toLowerCase();
+
+  return livestockCategories.find(group=>
+    group.matches.includes(category)
+  )||null;
+}
+
+function livestockForCategory(key){
+  return livestock.filter(item=>{
+    const group=livestockCategoryFor(item);
+    return group?.key===key && item.active!==false;
+  });
+}
+
+function renderLivestock(){
+  const hub=$('livestockHub');
+
+  hub.innerHTML=livestockCategories.map(group=>{
+    const residents=livestockForCategory(group.key);
+
+    const previews=residents
+      .filter(item=>item.photo_url)
+      .slice(0,3)
+      .map(item=>`
+        <img
+          src="${item.photo_url}"
+          alt="${item.name||group.title}"
+          onerror="this.style.display='none'"
+        >
+      `).join('');
+
+    const count=residents.reduce(
+      (total,item)=>total+(Number(item.quantity)||1),
+      0
+    );
+
+    return `
+      <div class="card livestockCategory"
+           onclick="showLivestockCategory('${group.key}')">
+        <div>
+          <div class="livestockCategoryIcon">${group.icon}</div>
+          <h3>${group.title}</h3>
+          <div class="livestockCategoryCount">
+            ${count} ${count===1?'resident':'residents'}
+          </div>
+        </div>
+
+        <div class="livestockCategoryPreview">
+          ${previews}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  showLivestockHub();
+}
+
+function showLivestockHub(){
+  $('livestockHub').classList.remove('hidden');
+  $('livestockCategoryView').classList.add('hidden');
+  $('livestockTitle').textContent='Livestock';
+}
+
+function showLivestockCategory(key){
+  const group=livestockCategories.find(x=>x.key===key);
+  if(!group)return;
+
+  const residents=livestockForCategory(key);
+
+  $('livestockHub').classList.add('hidden');
+  $('livestockCategoryView').classList.remove('hidden');
+  $('livestockTitle').textContent=group.title;
+
+  $('livestockCategoryHeader').innerHTML=`
+    <div class="icon">${group.icon}</div>
+    <div>
+      <strong>${group.title}</strong>
+      <div class="small">
+        ${residents.length} ${residents.length===1?'profile':'profiles'}
+      </div>
+    </div>
+  `;
+
+  $('livestockList').innerHTML=residents.length
+    ?residents.map(f=>`
+      <div class="card fish">
+        ${
+          f.photo_url
+            ?`<img class="fishPhoto"
+                   src="${f.photo_url}"
+                   onerror="this.style.visibility='hidden'"
+                   alt="${f.name||''}">`
+            :`<div class="fishPhoto"
+                   style="display:grid;place-items:center;font-size:34px">
+                 ${group.icon}
+               </div>`
+        }
+
+        <div>
+          <div class="eyebrow">
+            ${(f.owner_status||'MONITORING')
+              .replaceAll('_',' ')
+              .toUpperCase()}
+          </div>
+
+          <h3 style="margin:3px 0">${f.name||'Unnamed'}</h3>
+
+          <div class="small">
+            ${f.species||f.subtype||''}
+            ${f.scientific_name?' • '+f.scientific_name:''}
+          </div>
+
+          ${
+            f.quantity && Number(f.quantity)>1
+              ?`<div class="small">Quantity: ${f.quantity}</div>`
+              :''
+          }
+
+          <p class="small" style="margin:7px 0 0">
+            ${f.behavior||f.feeding_status||f.notes||'Profile ready for updates.'}
+          </p>
+
+          ${
+            f.special_badge
+              ?`<div class="small good" style="margin-top:5px">
+                   ${f.special_badge}
+                 </div>`
+              :''
+          }
+
+          ${
+            f.ai_status
+              ?`<div class="small" style="margin-top:5px">
+                   <strong>Alex:</strong> ${f.ai_status}
+                 </div>`
+              :''
+          }
+        </div>
+      </div>
+    `).join('')
+    :`<div class="card">
+        <h3>No ${group.title.toLowerCase()} recorded yet.</h3>
+        <div class="small">
+          Add one in Mission Control or Supabase and it will appear here.
+        </div>
+      </div>`;
+}
 function renderGoals(){$('goalList').innerHTML=goals.length?goals.map(g=>`<div class="card"><div class="eyebrow">${g.category||'GOAL'} • ${(g.priority||'normal').toUpperCase()}</div><h3>${g.title}</h3><div class="small">${g.target||g.notes||''}</div></div>`).join(''):'<div class="card">Goals module is waiting for the v4 database setup.</div>'}
 function renderFeed(){$('feedList').innerHTML=feed.length?feed.map(f=>`<div class="card feedItem"><div class="eyebrow">${(f.event_type||'NOTE').toUpperCase()}</div><h3>${f.title}</h3><div class="small">${new Date(f.event_at).toLocaleString()} • ${f.details||''}</div></div>`).join(''):'<div class="card">No feed events yet.</div>'}
 function renderPods(){let p=pods[0];if(!p)return;$('podStatus').textContent=`${p.species||'Tisbe'} • ${p.status||'Monitoring'}`;$('podInsight').textContent=p.ai_insight||p.notes||'Culture record loaded.'}
