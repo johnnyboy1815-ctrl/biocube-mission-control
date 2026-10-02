@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>BioCube Mission Control v5.2</title><link rel="manifest" href="manifest.json">
+<title>BioCube Mission Control v5.3</title><link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
@@ -22,7 +22,7 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 @media(min-width:850px){.heroText h2:after{font-size:15px}.homeFishCard{height:128px}.photoRail img{height:125px}.commandHero{grid-template-columns:2.15fr 1fr}.homeBottomGrid{grid-template-columns:1.55fr 1fr}}
 @media(max-width:719px){nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:hidden}nav button{display:block;width:auto;min-width:0;max-width:none;flex:none}nav button[data-tab="feed"],nav button[data-tab="pods"],nav button[data-tab="maintenance"]{display:none!important}nav button[data-tab="alex"]{display:block!important}}
 </style></head><body><div class="wrap">
-<section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v5.2.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
+<section id="login" class="card hidden"><div class="eyebrow">SECURE ACCESS</div><h1>BioCube 32 🪸</h1><p class="muted">Sign in to Mission Control v5.3.</p><div class="field"><label>Email</label><input id="email" type="email" autocomplete="username"></div><br><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><br><button class="primary" style="width:100%" onclick="signIn()">Sign In</button><div id="loginMsg" class="small"></div></section>
 <section id="app" class="hidden"><header><div class="brandMark"><div class="waveLogo">≋</div><div class="brand"><div class="eyebrow">BIOCUBE</div><h1>Mission Control</h1></div></div><div><span id="roleBadge" class="badge hidden">VIEW ONLY</span> <span id="updated" class="pill">SYNCING</span></div></header>
 <section id="home" class="section active"><div class="commandHero"><div class="hero card"><img id="tankHero" class="hidden" alt="Current BioCube"><div class="heroText"><div class="eyebrow">32G BIOCUBE</div><h2>32G BioCube</h2></div></div><div class="commandSide"><div class="card tankStatusCard"><div id="statusDot" class="bigDot"></div><div><div class="eyebrow">TANK STATUS</div><h3 id="homeStatus">Loading the reef…</h3><div class="small">Live status from your latest recorded parameters</div></div></div><div class="card latestPanel"><div class="latestHead"><div class="eyebrow">LATEST WATER TEST</div><div id="latestDate" class="small">—</div></div><div id="latestHomeTest" class="latestGrid"></div><button style="width:100%;margin-top:10px" onclick="switchTab('water')">View Full Test History →</button></div></div></div><div class="homeBlock"><div class="homeBlockHead"><div class="sectionIconTitle"><h3>Meet the Reef</h3></div><span class="small" onclick="switchTab('livestock')">View All Livestock →</span></div><div id="homeLivestock" class="homeFishStrip"></div></div><div class="homeBlock"><div class="homeBlockHead"><div class="sectionIconTitle"><h3>Tank Evolution</h3></div><span class="small">View Photos →</span></div><div id="homePhotos" class="photoRail"></div></div><div class="homeBottomGrid"><div class="card"><div class="sectionIconTitle"><div><div class="eyebrow">CURRENT MISSION</div><div class="small">What we're focused on right now</div></div></div><div id="homeGoals" class="list" style="margin-top:10px"></div></div><div class="card aiCard"><div class="sectionIconTitle"><div><div class="eyebrow">ALEX'S QUICK READ</div><div class="small">Rule engine for now</div></div></div><h3 id="missionBrief" style="margin:12px 0 0">Waiting for current data.</h3></div></div></section>
 <section id="water" class="section"><div class="sectionTitle"><div><div class="eyebrow">CHEMISTRY</div><h2>Water & Analytics</h2></div><button class="primary ownerOnly" onclick="openTest()">＋ Test</button></div><div class="grid" id="waterCards"></div><div class="card" style="margin-top:10px"><div class="label">Nitrate trend</div><canvas id="chart" width="800" height="220"></canvas></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI INSIGHT</div><h3 id="waterInsight">Trend engine ready.</h3><div class="small">Automatic AI analysis will be stored with the data rather than regenerated on every page load.</div></div><div class="card" style="margin-top:10px"><div class="scroll"><table><thead><tr><th>Date</th><th>NH₃</th><th>NO₂</th><th>NO₃</th><th>pH</th><th>KH</th><th>Ca</th><th>SG</th></tr></thead><tbody id="history"></tbody></table></div></div></section>
@@ -35,9 +35,9 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 <div class="actions" style="margin-top:12px"><button onclick="loadAll()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div></section></div>
 <nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Livestock</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="alex">🧠<br>Alex</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button></nav>
 <dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm"><div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div><div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div><div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div><div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div><div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div><div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div><div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div></form></dialog>
-<script src="config.js?v=5.2"></script><script>
+<script src="config.js?v=5.3"></script><script>
 const OWNER='1397f638-c599-4709-9892-571fad9c8758',VIEWERS=['05182544-7a84-4551-b82c-0f3ba0a7ead9','0ce96dba-397e-4dc9-a9d0-3623f3fb1ff3'];
-const APP_VERSION='5.2.0';
+const APP_VERSION='5.3.0';
 const cfg=window.BIOCUBE_CONFIG||{},configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes('YOUR_');let sb=null,tests=[],livestock=[],goals=[],feed=[],pods=[],photos=[],viewerMode=false,realtimeChannel=null,reloadTimer=null,lastBuildCheck=0;if(configured)sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=id=>document.getElementById(id),fmt=v=>v==null||v===''?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:3});const defs=[['ammonia','Ammonia','ppm'],['nitrite','Nitrite','ppm'],['nitrate','Nitrate','ppm'],['ph','pH',''],['kh','Alkalinity','dKH'],['calcium','Calcium','ppm'],['salinity','Salinity','SG'],['temperature','Temperature','°F'],['phosphate','Phosphate','ppm'],['copper','Copper','ppm']];
 function stat(k,v){if(v==null)return['muted','Not tested'];if(k==='ammonia')return v<=.05?['good','Excellent']:v<=.25?['warn','Watch']:['bad','High'];if(k==='nitrite')return v===0?['good','Zero']:['warn','Detectable'];if(k==='nitrate')return v<=20?['good','Good']:v<=40?['warn','Elevated']:['bad','High'];if(k==='ph')return v>=7.8&&v<=8.4?['good','Reef range']:['warn','Check trend'];if(k==='kh')return v>=8&&v<=12?['good','Good']:['warn','Check trend'];if(k==='calcium')return v>=400&&v<=460?['good','Excellent']:['warn','Check trend'];if(k==='salinity')return v>=1.024&&v<=1.0265?['good','Reef range']:['warn','Check'];if(k==='temperature')return v>=76&&v<=80?['good','Good']:['warn','Check'];if(k==='phosphate')return v>=.02&&v<=.1?['good','Useful reef range']:['warn','Check'];if(k==='copper')return v===0?['good','Zero']:['bad','Detected'];return['muted','']}
@@ -84,9 +84,9 @@ async function boot(){
   document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
   startRealtime();
 }
-function showSession(s){$('login').classList.toggle('hidden',!!s);$('app').classList.toggle('hidden',!s);$('nav').classList.toggle('hidden',!s);if(!s)return;viewerMode=s.user.id!==OWNER;$('roleBadge').classList.toggle('hidden',!viewerMode);document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hidden',viewerMode));loadAll()}
+function showSession(s){$('login').classList.toggle('hidden',!!s);$('app').classList.toggle('hidden',!s);$('nav').classList.toggle('hidden',!s);if(!s){alexJrConversationId=null;return}viewerMode=s.user.id!==OWNER;$('roleBadge').classList.toggle('hidden',!viewerMode);document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hidden',viewerMode));loadAll();restoreAlexJrConversation()}
 async function signIn(){$('loginMsg').textContent='Signing in…';let{error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginMsg').innerHTML=error?`<span class="bad">${error.message}</span>`:''}async function signOut(){await sb.auth.signOut()}
-function switchTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='livestock')showLivestockHub();window.scrollTo({top:0,behavior:'smooth'})}
+function switchTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='livestock')showLivestockHub();if(id==='alex'&&!alexJrConversationId)restoreAlexJrConversation();window.scrollTo({top:0,behavior:'smooth'})}
 async function safeTable(name,order='created_at'){let{data,error}=await sb.from(name).select('*').order(order,{ascending:false});if(error){console.warn(name,error.message);return[]}return data||[]}
 async function loadAll(){let wt=await safeTable('water_tests','tested_at');tests=wt;[livestock,goals,feed,pods,photos]=await Promise.all([safeTable('livestock'),safeTable('goals'),safeTable('tank_feed','event_at'),safeTable('pod_culture','logged_at'),safeTable('tank_photos','taken_at')]);render();$('updated').textContent=tests[0]?'Updated '+new Date(tests[0].tested_at).toLocaleDateString():'NO TESTS'}
 function render(){renderWater();renderHome();renderLivestock();renderGoals();renderFeed();renderPods()}
@@ -104,12 +104,37 @@ function renderPods(){let p=pods[0];if(!p)return;$('podStatus').textContent=`${p
 function draw(){let c=$('chart'),x=c.getContext('2d'),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle='#91b7c8';x.font='25px sans-serif';x.fillText('Add more tests to build the trend.',25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle='#55d6ff';x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
 async function askAlex(){const input=$('alexQuestion'),btn=$('alexAskBtn'),status=$('alexStatus'),answer=$('alexAnswer');const question=(input.value||'').trim();if(!question){status.textContent='Ask Alex a question first.';return}btn.disabled=true;input.disabled=true;answer.textContent='';status.textContent='Alex is checking Mission Control…';try{const tankContext={generated_at:new Date().toISOString(),latest_water_test:tests[0]||null,recent_water_tests:tests.slice(0,10),livestock:livestock.filter(f=>f.active!==false).map(f=>({name:f.name,species:f.species,scientific_name:f.scientific_name,owner_status:f.owner_status,feeding_status:f.feeding_status,behavior:f.behavior,notes:f.notes})),active_goals:goals.filter(g=>g.status!=='completed').slice(0,10),recent_feed:feed.slice(0,10),recent_pod_culture:pods.slice(0,10)};const{data,error}=await sb.functions.invoke('ask-alex',{body:{question,tankContext}});if(error)throw error;if(data?.error)throw new Error(data.error);answer.textContent=data?.answer||'Alex returned an empty response.';status.textContent='Tank context synced.'}catch(err){console.error('Ask Alex:',err);status.textContent='Alex could not answer right now. Check the Edge Function logs if this continues.'}finally{btn.disabled=false;input.disabled=false}}
 let alexJrConversationId=null;
+async function restoreAlexJrConversation(){
+  if(!sb)return null;
+  try{
+    const{data,error}=await sb
+      .from('alex_conversations')
+      .select('id,title,status,updated_at')
+      .eq('status','active')
+      .order('updated_at',{ascending:false})
+      .limit(1)
+      .maybeSingle();
+    if(error)throw error;
+    alexJrConversationId=data?.id??null;
+    if($('alexJrMeta')){
+      $('alexJrMeta').textContent=alexJrConversationId
+        ?`Reconnected to persistent Conversation #${alexJrConversationId}.`
+        :'No existing active conversation yet. The first test message will create one.';
+    }
+    return alexJrConversationId;
+  }catch(err){
+    console.warn('Alex Jr. conversation restore:',err);
+    if($('alexJrMeta'))$('alexJrMeta').textContent='Conversation reconnect unavailable. A new conversation may be created.';
+    return null;
+  }
+}
 async function askAlexJr(){
   const input=$('alexJrQuestion'),btn=$('alexJrBtn'),status=$('alexJrStatus'),answer=$('alexJrAnswer'),meta=$('alexJrMeta');
   const question=(input.value||'').trim();
   if(!question){status.textContent='Ask Alex Jr. a question first.';return}
   btn.disabled=true;input.disabled=true;answer.textContent='';meta.textContent='';status.textContent='Alex Jr. is loading Mission Control memory…';
   try{
+    if(!alexJrConversationId)await restoreAlexJrConversation();
     const body={question};
     if(alexJrConversationId)body.conversation_id=alexJrConversationId;
     const{data,error}=await sb.functions.invoke('mission-control-agent',{body});
