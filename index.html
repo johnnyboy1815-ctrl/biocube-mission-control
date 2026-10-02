@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#061722"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>BioCube Mission Control v5.3</title><link rel="manifest" href="manifest.json">
+<title>BioCube Mission Control v5.4</title><link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#020b12;--panel:#061925;--panel2:#0a2231;--line:#123f58;--txt:#effbff;--muted:#86a8ba;--aqua:#32c8ff;--good:#26e88b;--warn:#ffd166;--bad:#ff7070;--glow:#32c8ff22}
@@ -14,6 +14,13 @@ nav{position:fixed;z-index:20;bottom:0;left:0;right:0;display:flex;overflow-x:au
 .commandHero{display:grid;gap:10px}.tankStatusCard{display:flex;align-items:center;gap:12px}.bigDot{width:18px;height:18px;border-radius:50%;background:var(--good);box-shadow:0 0 18px #26e88b88;flex:0 0 auto}.tankStatusCard h3{margin:0;font-size:20px;color:#8ee8ff}.latestPanel{margin-top:10px}.latestHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.latestGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.latestTile{background:#0a2638;border:1px solid #123a50;border-radius:12px;padding:10px}.latestTile .value{font-size:19px;margin:3px 0}.sectionIconTitle{display:flex;align-items:center;gap:8px}.sectionIconTitle .icon{font-size:22px}.homeFishCard{min-width:220px;max-width:280px;height:118px;display:grid;grid-template-columns:42% 58%;background:#061824}.homeFishCard img{height:100%;width:100%;object-fit:cover}.homeFishShade{display:none}.homeFishText{position:static;padding:13px 11px;display:flex;flex-direction:column;justify-content:center}.homeFishText strong{font-size:18px}.homeFishText span{font-size:11px;margin-top:3px}.fishGood{color:var(--good);margin-top:8px;font-size:11px;font-weight:800}.photoRail img{width:175px;height:105px;border-radius:12px}.photoWrap{min-width:175px}.photoCap{font-size:10px;color:var(--muted);padding:5px 2px 0}.homeBottomGrid{display:grid;gap:10px;margin-top:12px}.heroText{left:0}.heroText h2{font-size:23px;margin-bottom:0}.heroSub{font-size:11px;color:#d7edf6}.brandMark{display:flex;align-items:center;gap:10px}.waveLogo{font-size:31px;color:var(--aqua);line-height:1}.brand h1{font-size:24px}.brand .eyebrow{color:#a7dff2}
 /* V5 Livestock Hub */
 .livestockHub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.livestockCategory{min-height:145px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s ease,border-color .15s ease}.livestockCategory:active{transform:scale(.98)}.livestockCategoryIcon{font-size:32px;line-height:1}.livestockCategory h3{font-size:18px;margin:12px 0 3px}.livestockCategoryCount{font-size:11px;color:var(--muted)}.livestockCategoryPreview{margin-top:10px;display:flex}.livestockCategoryPreview img{width:30px;height:30px;object-fit:cover;border-radius:50%;border:2px solid #082235;margin-right:-7px}.livestockBack{margin-bottom:12px;background:transparent;border:1px solid var(--line);padding:8px 11px}.livestockCategoryHeader{display:flex;align-items:center;gap:10px;margin-bottom:12px}.livestockCategoryHeader .icon{font-size:30px}
+
+/* V5.4 Alex Control Center */
+.alexControl{position:relative;isolation:isolate;overflow:hidden;min-height:70vh}.alexOrbit{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:-1}.alexOrbit i{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--aqua);opacity:.2;box-shadow:0 0 18px var(--aqua);animation:drift 9s ease-in-out infinite}.alexOrbit i:nth-child(1){left:8%;top:18%;animation-delay:-1s}.alexOrbit i:nth-child(2){left:82%;top:12%;animation-delay:-5s;width:4px;height:4px}.alexOrbit i:nth-child(3){left:68%;top:44%;animation-delay:-3s}.alexOrbit i:nth-child(4){left:15%;top:62%;animation-delay:-7s;width:5px;height:5px}.alexOrbit i:nth-child(5){left:90%;top:72%;animation-delay:-2s}.alexOrbit i:nth-child(6){left:44%;top:84%;animation-delay:-6s;width:4px;height:4px}@keyframes drift{0%,100%{transform:translate3d(0,0,0);opacity:.12}50%{transform:translate3d(16px,-24px,0);opacity:.55}}
+.alexTop{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:5px 2px 14px}.alexTop h2{font-size:28px;margin:2px 0 4px}.alexCore{width:66px;height:66px;position:relative;display:grid;place-items:center;flex:0 0 auto}.coreRing{position:absolute;inset:2px;border:1px solid #32c8ff88;border-radius:50%;box-shadow:0 0 28px #32c8ff55,inset 0 0 22px #32c8ff22;animation:coreSpin 6s linear infinite}.coreRing:before,.coreRing:after{content:"";position:absolute;border-radius:50%;background:var(--aqua);box-shadow:0 0 12px var(--aqua)}.coreRing:before{width:6px;height:6px;top:-3px;left:28px}.coreRing:after{width:4px;height:4px;bottom:5px;right:5px}@keyframes coreSpin{to{transform:rotate(360deg)}}.coreDot,.miniCore{display:grid;place-items:center;border-radius:50%;font-weight:900;color:#c9f5ff;background:radial-gradient(circle,#126080,#082738 62%,#04131f);border:1px solid #32c8ff88;box-shadow:0 0 24px #32c8ff55}.coreDot{width:42px;height:42px;font-size:20px}.miniCore{width:34px;height:34px;flex:0 0 auto}
+.alexStatusBar{display:flex;gap:7px;overflow-x:auto;margin-bottom:10px}.alexStatusBar span{white-space:nowrap;background:#061b27cc;border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:10px;color:#a9cad8}.livePulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:5px;box-shadow:0 0 10px var(--good);animation:pulse 1.6s ease-in-out infinite}@keyframes pulse{50%{opacity:.35;transform:scale(.72)}}
+.alexConsole{position:relative;overflow:hidden;border-color:#1d6888;background:linear-gradient(160deg,#0b2c40f2,#04131ff5 72%)}.alexConsole:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,#32c8ff09 50%,transparent 65%);animation:scan 5s linear infinite}@keyframes scan{0%{transform:translateX(-90%)}100%{transform:translateX(90%)}}.consoleHead{position:relative;display:flex;justify-content:space-between;align-items:center}.consoleHead h3{margin:3px 0 0;font-size:19px}.signal{display:flex;align-items:end;gap:3px;height:20px}.signal span{width:3px;border-radius:3px;background:var(--aqua);animation:eq 1.2s ease-in-out infinite}.signal span:nth-child(1){height:6px}.signal span:nth-child(2){height:15px;animation-delay:-.3s}.signal span:nth-child(3){height:10px;animation-delay:-.6s}.signal span:nth-child(4){height:18px;animation-delay:-.9s}@keyframes eq{50%{height:5px;opacity:.45}}
+.alexResponse{position:relative;min-height:155px;max-height:45vh;overflow:auto;margin:13px 0;padding:13px;border:1px solid #164b64;border-radius:14px;background:#03121bb8;white-space:pre-wrap;line-height:1.55}.alexWelcome{display:flex;gap:10px;align-items:center;color:#cfe8f2}.alexComposer{position:relative;display:grid;grid-template-columns:1fr auto;gap:8px}.alexComposer textarea{resize:none;width:100%;min-height:54px;padding:13px;border-radius:14px;border:1px solid #1b5873;background:#061b27;color:var(--txt);font:inherit;font-size:16px;outline:none}.alexComposer textarea:focus{border-color:var(--aqua);box-shadow:0 0 0 3px #32c8ff18}.alexSend{min-width:82px}.alexThinking{min-height:18px;margin-top:8px}.alexTelemetry{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.telemetryTile{padding:11px;border:1px solid var(--line);border-radius:13px;background:#061925cc}.telemetryTile span{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}.telemetryTile strong{display:block;margin-top:4px;font-size:13px;color:#d9f6ff}.alexMeta{margin:9px 2px 0;line-height:1.55}.alexControl.busy .coreRing{animation-duration:1.2s}.alexControl.busy .coreDot{box-shadow:0 0 34px #32c8ffaa}.alexControl.busy .signal span{animation-duration:.55s}@media(min-width:720px){.alexTelemetry{grid-template-columns:repeat(4,1fr)}.alexConsole{padding:20px}.alexResponse{min-height:210px}}
 @media(min-width:850px){.commandHero{grid-template-columns:2fr 1fr;align-items:stretch}.hero{min-height:390px}.commandSide{display:flex;flex-direction:column;gap:10px}.latestPanel{margin-top:0;flex:1}.homeFishStrip{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}.homeFishCard{min-width:0;max-width:none;width:100%}.homeBottomGrid{grid-template-columns:1.6fr 1fr}.photoRail{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible}.photoWrap{min-width:0}.photoRail img{width:100%;height:110px}}
 @media(min-width:720px){.grid{grid-template-columns:repeat(4,1fr)}nav{left:50%;transform:translateX(-50%);max-width:950px;border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}.hero{min-height:320px}}
 .heroText .eyebrow,.heroSub{display:none}.heroText h2{font-size:14px;margin:0;letter-spacing:.02em}.heroText h2{font-size:0}.heroText h2:after{content:"32G BioCube";font-size:14px}.tankStatusCard .small{display:none}.tankStatusCard{padding:14px 16px}.tankStatusCard h3{font-size:19px}.latestPanel{padding:14px}.latestTile{padding:10px}.latestTile .value{font-size:21px}.homeBlockHead .sectionIconTitle .icon{display:none}.homeBlockHead{margin-bottom:9px}.homeBlockHead h3{font-size:19px}.homeBlockHead>.small{font-size:10px}.sectionIconTitle{gap:0}.homeFishStrip{gap:9px}.homeFishCard{min-width:255px;max-width:290px;height:122px;grid-template-columns:48% 52%;border-radius:15px}.homeFishText{padding:11px}.homeFishText strong{font-size:19px}.homeFishText span{font-size:10px}.fishGood{margin-top:6px;font-size:10px}.photoRail{gap:9px}.photoWrap{min-width:190px}.photoRail img{width:190px;height:125px}.photoCap{font-size:10px}.homeBottomGrid .sectionIconTitle .icon{display:none}.homeBottomGrid .sectionIconTitle .small{display:none}.homeBottomGrid .card{padding:16px}.homeBottomGrid h3{font-size:18px;line-height:1.25}.aiCard #missionBrief{font-size:17px}
@@ -31,13 +38,30 @@ nav button{font-size:0;min-width:67px;padding:8px 4px}nav button:before{display:
 <section id="feed" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM JOURNAL</div><h2>Tank Feed</h2></div></div><div id="feedList" class="list"></div></section>
 <section id="pods" class="section"><div class="sectionTitle"><div><div class="eyebrow">LIVE FOOD SYSTEM</div><h2>Pod Culture</h2></div></div><div class="card"><h3 id="podStatus">Culture system planned 🦠</h3><p class="muted">Tisbe culture monitoring will live here: feeding, density, harvests, stability checks and recovery guidance.</p></div><div class="card aiCard" style="margin-top:10px"><div class="eyebrow">AI CULTURE INSIGHT</div><h3 id="podInsight">Waiting for the culture to come online.</h3></div></section>
 <section id="maintenance" class="section"><div class="sectionTitle"><div><div class="eyebrow">SYSTEM CARE</div><h2>Maintenance</h2></div></div><div class="card"><h3>Maintenance module ready for expansion.</h3><p class="muted">Water changes, filter service, ATO, equipment and recurring care will live here.</p></div></section>
-<section id="alex" class="section"><div class="sectionTitle"><div><div class="eyebrow">AI ADVISOR</div><h2>Ask Alex</h2></div></div><div class="card aiCard"><h3>Your tank-aware aquarium advisor.</h3><p class="muted">Alex uses your current Mission Control water history, livestock, goals, feed and pod-culture records as context.</p><div class="askBox"><input id="alexQuestion" maxlength="1500" placeholder="Ask about Glitch, chemistry, pods…"><button id="alexAskBtn" class="primary" onclick="askAlex()">Ask</button></div><div id="alexStatus" class="small" style="margin-top:10px"></div><div id="alexAnswer" style="margin-top:12px;white-space:pre-wrap;line-height:1.55"></div></div><div class="card" style="margin-top:10px;border-color:#755f28"><div class="eyebrow" style="color:var(--warn)">PHASE 2 TEST BRIDGE</div><h3 style="margin:5px 0">🧪 Test Alex Jr.</h3><p class="small">Uses the new persistent <strong>mission-control-agent</strong>. Regular Ask Alex above remains untouched.</p><div class="askBox"><input id="alexJrQuestion" maxlength="4000" placeholder="Ask the new Mission Control brain…"><button id="alexJrBtn" onclick="askAlexJr()">Test</button></div><div id="alexJrStatus" class="small" style="margin-top:10px"></div><div id="alexJrAnswer" style="margin-top:12px;white-space:pre-wrap;line-height:1.55"></div><div id="alexJrMeta" class="small" style="margin-top:10px"></div></div></section>
+<section id="alex" class="section alexControl">
+<div class="alexOrbit" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div class="alexTop"><div><div class="eyebrow">MISSION CONTROL AI</div><h2>Alex Control Center</h2><p class="muted">Persistent tank intelligence connected to Mission Control.</p></div><div class="alexCore"><div class="coreRing"></div><div class="coreDot">A</div></div></div>
+<div class="alexStatusBar"><span><b class="livePulse"></b> Alex Online</span><span id="alexMemoryState">Connecting memory…</span><span id="alexWriteState">Controlled Writes</span></div>
+<div class="card alexConsole">
+<div class="consoleHead"><div><div class="eyebrow">LIVE CONVERSATION</div><h3>Talk to Alex</h3></div><div class="signal"><span></span><span></span><span></span><span></span></div></div>
+<div id="alexAnswer" class="alexResponse"><div class="alexWelcome"><div class="miniCore">A</div><div><strong>Mission Control standing by.</strong><br><span class="small">Ask about livestock, chemistry, goals, observations, or tell Alex what you want recorded.</span></div></div></div>
+<div class="alexComposer"><textarea id="alexQuestion" maxlength="4000" rows="2" placeholder="Ask Alex anything about the BioCube…"></textarea><button id="alexAskBtn" class="primary alexSend" onclick="askAlex()">Send ↑</button></div>
+<div id="alexStatus" class="small alexThinking"></div>
+</div>
+<div class="alexTelemetry">
+<div class="telemetryTile"><span>Conversation</span><strong id="alexConv">—</strong></div>
+<div class="telemetryTile"><span>Memory</span><strong id="alexMemory">—</strong></div>
+<div class="telemetryTile"><span>Tank Data</span><strong id="alexContext">—</strong></div>
+<div class="telemetryTile"><span>Last Action</span><strong id="alexAction">Standby</strong></div>
+</div>
+<div id="alexMeta" class="small alexMeta"></div>
+</section>
 <div class="actions" style="margin-top:12px"><button onclick="loadAll()">↻ Sync</button><button class="danger" onclick="signOut()">Sign Out</button></div></section></div>
 <nav id="nav" class="hidden"><button class="active" data-tab="home">🏠<br>Home</button><button data-tab="water">🧪<br>Water</button><button data-tab="livestock">🐠<br>Livestock</button><button data-tab="goals">🎯<br>Goals</button><button data-tab="alex">🧠<br>Alex</button><button data-tab="feed">📰<br>Feed</button><button data-tab="pods">🦠<br>Pods</button><button data-tab="maintenance">🔧<br>Care</button></nav>
 <dialog id="testDialog"><h2>Add Water Test</h2><form id="testForm"><div class="field"><label>Ammonia ppm</label><input name="ammonia" inputmode="decimal"></div><div class="field"><label>Nitrite ppm</label><input name="nitrite" inputmode="decimal"></div><div class="field"><label>Nitrate ppm</label><input name="nitrate" inputmode="decimal"></div><div class="field"><label>Phosphate ppm</label><input name="phosphate" inputmode="decimal"></div><div class="field"><label>pH</label><input name="ph" inputmode="decimal"></div><div class="field"><label>KH / dKH</label><input name="kh" inputmode="decimal"></div><div class="field"><label>Calcium ppm</label><input name="calcium" inputmode="decimal"></div><div class="field"><label>Salinity / SG</label><input name="salinity" inputmode="decimal"></div><div class="field"><label>Temperature °F</label><input name="temperature" inputmode="decimal"></div><div class="field"><label>Copper ppm</label><input name="copper" inputmode="decimal"></div><div class="field span2"><label>Notes</label><textarea name="notes" rows="2"></textarea></div><div class="span2 actions"><button type="button" onclick="testDialog.close()">Cancel</button><button class="primary" type="submit">Save to Cloud</button></div></form></dialog>
-<script src="config.js?v=5.3"></script><script>
+<script src="config.js?v=5.4"></script><script>
 const OWNER='1397f638-c599-4709-9892-571fad9c8758',VIEWERS=['05182544-7a84-4551-b82c-0f3ba0a7ead9','0ce96dba-397e-4dc9-a9d0-3623f3fb1ff3'];
-const APP_VERSION='5.3.0';
+const APP_VERSION='5.4.0';
 const cfg=window.BIOCUBE_CONFIG||{},configured=cfg.supabaseUrl&&cfg.supabasePublishableKey&&!cfg.supabaseUrl.includes('YOUR_');let sb=null,tests=[],livestock=[],goals=[],feed=[],pods=[],photos=[],viewerMode=false,realtimeChannel=null,reloadTimer=null,lastBuildCheck=0;if(configured)sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=id=>document.getElementById(id),fmt=v=>v==null||v===''?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:3});const defs=[['ammonia','Ammonia','ppm'],['nitrite','Nitrite','ppm'],['nitrate','Nitrate','ppm'],['ph','pH',''],['kh','Alkalinity','dKH'],['calcium','Calcium','ppm'],['salinity','Salinity','SG'],['temperature','Temperature','°F'],['phosphate','Phosphate','ppm'],['copper','Copper','ppm']];
 function stat(k,v){if(v==null)return['muted','Not tested'];if(k==='ammonia')return v<=.05?['good','Excellent']:v<=.25?['warn','Watch']:['bad','High'];if(k==='nitrite')return v===0?['good','Zero']:['warn','Detectable'];if(k==='nitrate')return v<=20?['good','Good']:v<=40?['warn','Elevated']:['bad','High'];if(k==='ph')return v>=7.8&&v<=8.4?['good','Reef range']:['warn','Check trend'];if(k==='kh')return v>=8&&v<=12?['good','Good']:['warn','Check trend'];if(k==='calcium')return v>=400&&v<=460?['good','Excellent']:['warn','Check trend'];if(k==='salinity')return v>=1.024&&v<=1.0265?['good','Reef range']:['warn','Check'];if(k==='temperature')return v>=76&&v<=80?['good','Good']:['warn','Check'];if(k==='phosphate')return v>=.02&&v<=.1?['good','Useful reef range']:['warn','Check'];if(k==='copper')return v===0?['good','Zero']:['bad','Detected'];return['muted','']}
@@ -84,9 +108,9 @@ async function boot(){
   document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
   startRealtime();
 }
-function showSession(s){$('login').classList.toggle('hidden',!!s);$('app').classList.toggle('hidden',!s);$('nav').classList.toggle('hidden',!s);if(!s){alexJrConversationId=null;return}viewerMode=s.user.id!==OWNER;$('roleBadge').classList.toggle('hidden',!viewerMode);document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hidden',viewerMode));loadAll();restoreAlexJrConversation()}
+function showSession(s){$('login').classList.toggle('hidden',!!s);$('app').classList.toggle('hidden',!s);$('nav').classList.toggle('hidden',!s);if(!s){alexConversationId=null;return}viewerMode=s.user.id!==OWNER;$('roleBadge').classList.toggle('hidden',!viewerMode);document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hidden',viewerMode));loadAll();restoreAlexConversation()}
 async function signIn(){$('loginMsg').textContent='Signing in…';let{error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('loginMsg').innerHTML=error?`<span class="bad">${error.message}</span>`:''}async function signOut(){await sb.auth.signOut()}
-function switchTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='livestock')showLivestockHub();if(id==='alex'&&!alexJrConversationId)restoreAlexJrConversation();window.scrollTo({top:0,behavior:'smooth'})}
+function switchTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='livestock')showLivestockHub();if(id==='alex'&&!alexConversationId)restoreAlexConversation();window.scrollTo({top:0,behavior:'smooth'})}
 async function safeTable(name,order='created_at'){let{data,error}=await sb.from(name).select('*').order(order,{ascending:false});if(error){console.warn(name,error.message);return[]}return data||[]}
 async function loadAll(){let wt=await safeTable('water_tests','tested_at');tests=wt;[livestock,goals,feed,pods,photos]=await Promise.all([safeTable('livestock'),safeTable('goals'),safeTable('tank_feed','event_at'),safeTable('pod_culture','logged_at'),safeTable('tank_photos','taken_at')]);render();$('updated').textContent=tests[0]?'Updated '+new Date(tests[0].tested_at).toLocaleDateString():'NO TESTS'}
 function render(){renderWater();renderHome();renderLivestock();renderGoals();renderFeed();renderPods()}
@@ -102,57 +126,50 @@ function renderGoals(){$('goalList').innerHTML=goals.length?goals.map(g=>`<div c
 function renderFeed(){$('feedList').innerHTML=feed.length?feed.map(f=>`<div class="card feedItem"><div class="eyebrow">${(f.event_type||'NOTE').toUpperCase()}</div><h3>${f.title}</h3><div class="small">${new Date(f.event_at).toLocaleString()} • ${f.details||''}</div></div>`).join(''):'<div class="card">No feed events yet.</div>'}
 function renderPods(){let p=pods[0];if(!p)return;$('podStatus').textContent=`${p.species||'Tisbe'} • ${p.status||'Monitoring'}`;$('podInsight').textContent=p.ai_insight||p.notes||'Culture record loaded.'}
 function draw(){let c=$('chart'),x=c.getContext('2d'),d=[...tests].reverse().filter(t=>t.nitrate!=null);x.clearRect(0,0,c.width,c.height);if(d.length<2){x.fillStyle='#91b7c8';x.font='25px sans-serif';x.fillText('Add more tests to build the trend.',25,110);return}let m=Math.max(40,...d.map(t=>+t.nitrate));x.strokeStyle='#55d6ff';x.lineWidth=5;x.beginPath();d.forEach((t,i)=>{let px=35+i*(c.width-70)/(d.length-1),py=c.height-25-(+t.nitrate/m)*(c.height-50);i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke()}
-async function askAlex(){const input=$('alexQuestion'),btn=$('alexAskBtn'),status=$('alexStatus'),answer=$('alexAnswer');const question=(input.value||'').trim();if(!question){status.textContent='Ask Alex a question first.';return}btn.disabled=true;input.disabled=true;answer.textContent='';status.textContent='Alex is checking Mission Control…';try{const tankContext={generated_at:new Date().toISOString(),latest_water_test:tests[0]||null,recent_water_tests:tests.slice(0,10),livestock:livestock.filter(f=>f.active!==false).map(f=>({name:f.name,species:f.species,scientific_name:f.scientific_name,owner_status:f.owner_status,feeding_status:f.feeding_status,behavior:f.behavior,notes:f.notes})),active_goals:goals.filter(g=>g.status!=='completed').slice(0,10),recent_feed:feed.slice(0,10),recent_pod_culture:pods.slice(0,10)};const{data,error}=await sb.functions.invoke('ask-alex',{body:{question,tankContext}});if(error)throw error;if(data?.error)throw new Error(data.error);answer.textContent=data?.answer||'Alex returned an empty response.';status.textContent='Tank context synced.'}catch(err){console.error('Ask Alex:',err);status.textContent='Alex could not answer right now. Check the Edge Function logs if this continues.'}finally{btn.disabled=false;input.disabled=false}}
-let alexJrConversationId=null;
-async function restoreAlexJrConversation(){
+let alexConversationId=null;
+async function restoreAlexConversation(){
   if(!sb)return null;
   try{
-    const{data,error}=await sb
-      .from('alex_conversations')
-      .select('id,title,status,updated_at')
-      .eq('status','active')
-      .order('updated_at',{ascending:false})
-      .limit(1)
-      .maybeSingle();
+    const{data,error}=await sb.from('alex_conversations').select('id,title,status,updated_at').eq('status','active').order('updated_at',{ascending:false}).limit(1).maybeSingle();
     if(error)throw error;
-    alexJrConversationId=data?.id??null;
-    if($('alexJrMeta')){
-      $('alexJrMeta').textContent=alexJrConversationId
-        ?`Reconnected to persistent Conversation #${alexJrConversationId}.`
-        :'No existing active conversation yet. The first test message will create one.';
-    }
-    return alexJrConversationId;
+    alexConversationId=data?.id??null;
+    if($('alexConv'))$('alexConv').textContent=alexConversationId?`#${alexConversationId}`:'New';
+    if($('alexMemory'))$('alexMemory').textContent=alexConversationId?'Connected':'Ready';
+    if($('alexMemoryState'))$('alexMemoryState').textContent=alexConversationId?`Memory • Conversation #${alexConversationId}`:'Memory • New conversation';
+    if($('alexMeta'))$('alexMeta').textContent=alexConversationId?`Persistent conversation #${alexConversationId} restored from Supabase.`:'No active conversation yet. Your first message will create one.';
+    return alexConversationId;
   }catch(err){
-    console.warn('Alex Jr. conversation restore:',err);
-    if($('alexJrMeta'))$('alexJrMeta').textContent='Conversation reconnect unavailable. A new conversation may be created.';
+    console.warn('Alex conversation restore:',err);
+    if($('alexMemory'))$('alexMemory').textContent='Reconnect issue';
+    if($('alexMeta'))$('alexMeta').textContent='Conversation reconnect unavailable. Alex can still attempt a new session.';
     return null;
   }
 }
-async function askAlexJr(){
-  const input=$('alexJrQuestion'),btn=$('alexJrBtn'),status=$('alexJrStatus'),answer=$('alexJrAnswer'),meta=$('alexJrMeta');
+async function askAlex(){
+  const input=$('alexQuestion'),btn=$('alexAskBtn'),status=$('alexStatus'),answer=$('alexAnswer'),meta=$('alexMeta'),panel=$('alex');
   const question=(input.value||'').trim();
-  if(!question){status.textContent='Ask Alex Jr. a question first.';return}
-  btn.disabled=true;input.disabled=true;answer.textContent='';meta.textContent='';status.textContent='Alex Jr. is loading Mission Control memory…';
+  if(!question){status.textContent='Ask Alex something first.';return}
+  btn.disabled=true;input.disabled=true;panel?.classList.add('busy');status.textContent='Alex is reading Mission Control…';
   try{
-    if(!alexJrConversationId)await restoreAlexJrConversation();
-    const body={question};
-    if(alexJrConversationId)body.conversation_id=alexJrConversationId;
+    if(!alexConversationId)await restoreAlexConversation();
+    const body={question};if(alexConversationId)body.conversation_id=alexConversationId;
     const{data,error}=await sb.functions.invoke('mission-control-agent',{body});
-    if(error)throw error;
-    if(data?.error)throw new Error(data.detail||data.error);
-    if(!data?.ok)throw new Error('Alex Jr. returned an unexpected response.');
-    alexJrConversationId=data.conversation_id||alexJrConversationId;
-    answer.textContent=data.answer||'Alex Jr. returned an empty response.';
-    const c=data.context_loaded||{},p=data.persistence||{};
-    status.textContent='Phase 2 response received.';
-    meta.textContent=`Conversation #${data.conversation_id??'—'} • Water ${c.water_tests??0} • Livestock ${c.livestock??0} • Goals ${c.goals??0} • History ${c.history_events??0} • Observations ${c.observations??0} • Recent messages ${c.recent_messages??0} • Chat saved: ${p.user_message_saved&&p.alex_message_saved?'yes':'no'} • Tank writes: ${p.tank_state_modified?'yes':'no'}`;
+    if(error)throw error;if(data?.error)throw new Error(data.detail||data.error);if(!data?.ok)throw new Error('Alex returned an unexpected response.');
+    alexConversationId=data.conversation_id||alexConversationId;
+    answer.textContent=data.answer||'Alex returned an empty response.';
+    input.value='';
+    const c=data.context_loaded||{},p=data.persistence||{},w=p.verified_write||null;
+    $('alexConv').textContent=`#${data.conversation_id??'—'}`;
+    $('alexMemory').textContent=p.user_message_saved&&p.alex_message_saved?'Synced':'Check';
+    $('alexContext').textContent=`${c.livestock??0} livestock • ${c.goals??0} goals`;
+    $('alexAction').textContent=w?`${String(w.operation||'write').replaceAll('_',' ')} ✓`:'Read / reason';
+    $('alexWriteState').textContent=viewerMode?'Read Only':(p.tank_state_modified?'Write Verified ✓':'Controlled Writes');
+    status.textContent=p.tank_state_modified?'Verified Mission Control write completed.':'Mission Control synced.';
+    meta.textContent=`Conversation #${data.conversation_id??'—'} • Water ${c.water_tests??0} • Livestock ${c.livestock??0} • Goals ${c.goals??0} • History ${c.history_events??0} • Observations ${c.observations??0} • Recent ${c.recent_messages??0} • Chat ${p.user_message_saved&&p.alex_message_saved?'saved':'check'} • Tank writes ${p.tank_state_modified?'yes':'no'}`;
   }catch(err){
-    console.error('Test Alex Jr.:',err);
-    status.textContent='Alex Jr. test failed.';
-    answer.textContent=err?.message||String(err);
-  }finally{
-    btn.disabled=false;input.disabled=false;
-  }
+    console.error('Alex:',err);status.textContent='Alex could not complete that request.';answer.textContent=err?.message||String(err);$('alexAction').textContent='Error';
+  }finally{btn.disabled=false;input.disabled=false;panel?.classList.remove('busy')}
 }
+$('alexQuestion')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askAlex()}});
 function openTest(){if(viewerMode)return;$('testForm').reset();$('testDialog').showModal()}$('testForm').addEventListener('submit',async e=>{e.preventDefault();if(viewerMode)return;let f=new FormData(e.target),o={};for(let[k,v]of f.entries())o[k]=k==='notes'?v:(v.trim()===''?null:Number(v));let{error}=await sb.from('water_tests').insert(o);if(error){alert(error.message);return}$('testDialog').close();await loadAll()});boot();
 </script></body></html>
